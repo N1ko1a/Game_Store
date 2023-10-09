@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AiFillHome, AiFillDatabase, AiOutlineDoubleRight, AiOutlineClose } from "react-icons/ai";
 import Icon from "./Icon.tsx"
-import { motion, AnimatePresence} from "framer-motion";
+import { motion } from "framer-motion";
 function SideNav() {
     const[menu, setMenu] = useState(() => {return false;});
     const[but, setBut] = useState(() => {return false;});
@@ -39,8 +39,7 @@ function SideNav() {
     return (
      <div>  
 
-        <motion.div className={`fixed left-5 top-6 bottom-6 w-80 bg-gray-800 rounded-2xl `} initial={{x:0}} animate={{x: menu ? "-100vh" : 0, transition: {type: "spring"}}}  exit={{ x: 0, transition: { duration: 0.01 } }}>
-
+        <motion.div className={`fixed left-5 top-6 bottom-6 w-80 bg-gray-800 rounded-2xl ${menu ? '' : 'translate-x-0 duration-500 ease-in-out'}`}>
 
             <ul className=" h-full text-white">
                 <li className="flex justify-between">
@@ -64,20 +63,11 @@ function SideNav() {
                 </li>
             </ul>
         </motion.div>
+            <button className={`text-white flex items-center justify-center z-10 h-screen ${but ? "visible" : "invisible"} ${click ? 'invisible' : 'visible'} ` } onClick={toggleMenu}>
 
-<motion.button
-  initial={{ x: "-100vh"}} // Initial animation state (invisible and scaled down)
-  animate={{ x: but ? 0 : "-100vh"}} // Animate to visible or invisible based on 'but' variable
-  transition={{ duration: 0.3 }} // Animation duration
-  className={`text-white flex items-center justify-center z-10 h-screen ${click ? 'invisible' : 'visible'}`}
-  onClick={toggleMenu}
->
+
                 <AiOutlineDoubleRight className="w-7 h-7" />
-</motion.button>
-            <AnimatePresence>
-            initial={false}
-            exitBeforeEnter={true}
-            </AnimatePresence>
+            </button>
         </div>
     );
 }
