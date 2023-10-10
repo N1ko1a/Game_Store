@@ -37,7 +37,7 @@ function SideNav() {
         setClick(!click);
     };
     return (
-     <div>  
+     <div className="fixed left-0 bottom-0 top-0 w-80">  
 
         <motion.div className={`fixed left-5 top-6 bottom-6 w-80 bg-gray-800 rounded-2xl `} initial={{x:0}} animate={{x: menu ? "-100vh" : 0, transition: {type: "spring"}}}  exit={{ x: 0, transition: { duration: 0.01 } }}>
 
