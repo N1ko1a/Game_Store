@@ -25,7 +25,7 @@ function SearchBar() {
                 <AiOutlineAlignRight className=" mr-3 w-14 h-10 p-2 text-white hover:bg-gray-700 rounded-xl" onClick={toggleSearch}/>
             </div>
 
-                {isOpen ?  <div className=" "><SearchOptions/></div> : null}
+                {isOpen ?  <div><SearchOptions/></div> : null}
 
 
 
