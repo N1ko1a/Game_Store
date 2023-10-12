@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { AiOutlineAlignRight } from "react-icons/ai";
 import SearchOptions from "./SearchOptions";
 
+import { motion, AnimatePresence} from "framer-motion";
 function SearchBar() {
     const [search, setSearch] = useState(() => "");
     const[isOpen, setIsOpen] = useState(() => {return false;});
     const handleInputChange = (event) => {
         setSearch(event.target.value);
     };
-
+ //Tracing when the button is clicked so we can open search bar options
     const toggleSearch = () =>{
         setIsOpen(!isOpen);
     };
@@ -25,10 +26,17 @@ function SearchBar() {
                 <AiOutlineAlignRight className=" mr-3 w-14 h-10 p-2 text-white hover:bg-gray-700 rounded-xl" onClick={toggleSearch}/>
             </div>
 
-                {isOpen ?  <div><SearchOptions/></div> : null}
-
-
-
+{/* Conditional rendering must be inside AnimatePresence because we won't know when the render is finished to use exit animation */}
+            <AnimatePresence> 
+                {isOpen && <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{duration: 0.3}}
+                >
+                    <SearchOptions/>
+                </motion.div>}
+            </AnimatePresence> 
         </div>
     );
 }
