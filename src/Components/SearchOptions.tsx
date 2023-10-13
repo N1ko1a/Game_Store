@@ -94,13 +94,13 @@ function SearchOptions() {
 
 
     return (
-        <motion.div className="flex flex-wrap justify-evenly relative z-10 max-w-xl min-w-fit rounded-2xl bg-gray-800 mt-10 border-2 border-gray-900"   >
+        <motion.div className="flex flex-wrap justify-evenly relative  max-w-xl min-w-fit rounded-2xl bg-gray-800 mt-10 border-2 border-gray-900"   >
             <div>
                 <button
                     onClick={toggleGenerClick}
                     className="bg-gray-700 m-5 w-44 h-7 p-4 flex items-center justify-between font-medium text-l text-white rounded-lg tracking-wider border-4 border-transparent active:text-white active:border-white duration-300"
                 >
-                    {selectedGener || "Genre"} {generClick ? <AiOutlineCaretUp /> : <AiOutlineCaretDown />}
+                    {selectedGener || "Genre"} {generClick ? <AiOutlineCaretUp className="transition: 0,3" /> : <AiOutlineCaretDown />}
                 </button>
                 <AnimatePresence>
                     {/*conditional rendering if generClick is true the expresion will be shown if its false it will not be shown*/}

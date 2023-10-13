@@ -4,9 +4,9 @@ import SearchBar from "../Components/SearchBar"
 
 function Home(){
     return (
-        <div className=" flex justify-around">
-            <SearchBar/>
+        <div className=" flex flex-col">
             <SideNav/>
+            <SearchBar/>
         </div>
     )
 }

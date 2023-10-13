@@ -5,6 +5,7 @@ function Library(){
     return(
         <>
             <SideNav/>
+            <h1 className="text-red-900">Library</h1>
         </>
     )
 }

@@ -36,10 +36,11 @@ function SideNav() {
         setMenu(!menu);
         setClick(!click);
     };
+    
     return (
-     <div className="fixed left-0 bottom-0 top-0 w-80">  
+     <motion.div className={`fixed left-0 bottom-0 top-0 w-80 ${ icon ? 'z-20' : 'z-0'} `} initial={{opacity:0, x: -10}} animate={{opacity: 1, x: 0}} transition={{duration: 0.3}}>  
 
-        <motion.div className={`fixed left-5 top-6 bottom-6 w-80 bg-gray-800 rounded-2xl `} initial={{x:0}} animate={{x: menu ? "-100vh" : 0, transition: {type: "spring"}}}  exit={{ x: 0, transition: { duration: 0.01 } }}>
+        <motion.div className={`fixed left-5 top-6 bottom-6 w-80 bg-gray-800 rounded-2xl `} initial={{x:0 }} animate={{x: menu ? "-100vh" : 0, transition: {type: "spring"}}}  exit={{ x: 0, transition: { duration: 0.01 }}}>
 
 
             <ul className=" h-full text-white">
@@ -47,16 +48,16 @@ function SideNav() {
                     <Icon />
                     < AiOutlineClose className={` mr-4 mt-4 w-7 h-7 ${icon && click ? 'visible' : 'invisible'}` } onClick={toggleMenu}/>
                 </li>
-                <li className="flex justify-start pl-2 pt-3 ml-5 mt-5 hover:bg-gray-700 h-12 w-4/5 rounded-2xl transition duration-500 ease-in-out">
-                    <AiFillHome className="mt-1"/ > 
-                    <Link to="/" className="ml-2 ">
-                        Home
-                    </Link>
+                <li>
+                <Link to="/" className="flex justify-start pl-2 pt-3 ml-5 mt-5 hover:bg-gray-700 h-12 w-4/5 rounded-2xl transition duration-500 ease-in-out hover:text-black cursor-pointer ">
+                    <AiFillHome className="mt-1"/ >
+                       <a className=" pl-2"> Home</a> 
+                </Link>
                 </li>
-                <li className="flex justify-start pl-2 pt-3 ml-5 mt-2 h-12 w-4/5 rounded-2xl hover:bg-gray-700 transition duration-500 ease-in-out">
+                <li >
+                    <Link to="/Library"  className="flex justify-start pl-2 pt-3 ml-5 mt-2 h-12 w-4/5 rounded-2xl hover:bg-gray-700 transition duration-500 ease-in-out hover:text-black cursor-pointer">
                     <AiFillDatabase className="mt-1"/> 
-                    <Link to="/Library" className="ml-2">
-                        My Library
+                      <a className="pl-2"> My Library</a>  
                     </Link>
                 </li>
                 <li className="absolute  bottom-0 h-16">
@@ -78,7 +79,7 @@ function SideNav() {
             initial={false}
             exitBeforeEnter={true}
             </AnimatePresence>
-        </div>
+        </motion.div>
     );
 }
 
