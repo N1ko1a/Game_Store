@@ -4,10 +4,28 @@ import { AiFillHome, AiFillDatabase, AiOutlineDoubleRight, AiOutlineClose } from
 import Icon from "./Icon.tsx"
 import { motion, AnimatePresence} from "framer-motion";
 function SideNav() {
-    const[menu, setMenu] = useState(() => {return false;});
-    const[but, setBut] = useState(() => {return false;});
+    const windowWidth = window.innerWidth;
+    const[menu, setMenu] = useState(() => { if(windowWidth >= 1024){
+            return false;
+        }
+        else{
+            return true;
+        }});
+    const[but, setBut] = useState(() => { if(windowWidth >= 1024){
+
+            return false;
+        }
+        else{
+            return true;
+        }});
     const[click, setClick] = useState(() => {return false;});
-    const[icon, setIcon] = useState(() => {return false;});
+    
+    const[icon, setIcon] = useState(() => { if(windowWidth >= 1024){
+            return false;
+        }
+        else{
+            return true;
+        } });
     useEffect(() => {
         const closeMenu = () => {
             if(window.innerWidth <= 1024){
@@ -38,7 +56,7 @@ function SideNav() {
     };
     
     return (
-     <motion.div className={`fixed left-0 bottom-0 top-0 w-80 ${ icon ? 'z-20' : 'z-0'} `} initial={{opacity:0, x: -100}} animate={{opacity: 1, x: 0}} transition={{duration: 0.3}}>  
+     <motion.div className={`fixed left-0 bottom-0 top-0 w-80 ${ icon ? 'z-20' : 'z-0'} `} initial={{x: "-100vh" }} animate={{x: 0, transition: {type: "spring"}}}  exit={{ x: "-100vh", transition: { duration: 0.01 }}}>  
 
         <motion.div className={`fixed left-5 top-6 bottom-6 w-80 bg-gray-800 rounded-2xl `} initial={{x:0 }} animate={{x: menu ? "-100vh" : 0, transition: {type: "spring"}}}  exit={{ x: 0, transition: { duration: 0.01 }}}>
 
