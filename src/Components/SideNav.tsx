@@ -38,7 +38,7 @@ function SideNav() {
     };
     
     return (
-     <motion.div className={`fixed left-0 bottom-0 top-0 w-80 ${ icon ? 'z-20' : 'z-0'} `} initial={{opacity:0, x: -10}} animate={{opacity: 1, x: 0}} transition={{duration: 0.3}}>  
+     <motion.div className={`fixed left-0 bottom-0 top-0 w-80 ${ icon ? 'z-20' : 'z-0'} `} initial={{opacity:0, x: -100}} animate={{opacity: 1, x: 0}} transition={{duration: 0.3}}>  
 
         <motion.div className={`fixed left-5 top-6 bottom-6 w-80 bg-gray-800 rounded-2xl `} initial={{x:0 }} animate={{x: menu ? "-100vh" : 0, transition: {type: "spring"}}}  exit={{ x: 0, transition: { duration: 0.01 }}}>
 
