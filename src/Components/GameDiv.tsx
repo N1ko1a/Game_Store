@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import LoadSkeleton from "./LoadSkeleton.tsx";
-import Skeleton from "react-loading-skeleton";
+import { AiFillStar } from "react-icons/ai";
 function GameDiv(){
     const[games, setGames] = useState([])
     const[isLoading, setIsLoading] = useState(() => {return true;});
     useEffect(() => {
-  fetch('https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page_size=50&page=50')
+  fetch('https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page_size=50&page=1&ordering=-popularity')
     .then((res) => res.json())
     .then((data) => {
       console.log(data.results);
@@ -26,13 +26,13 @@ function GameDiv(){
             ) : (
                     games.map((game) => (
                 <div>
-            <button className="flex flex-col justify-center items-center w-60 h-44 rounded-3xl text-white hover:bg-gray-800 ease-in-out duration-500 hover:text-black">
-                <div className="flex justify-center items-center">
-                <img src={game.background_image} alt="Game" loading="lazy" className="w-56 h-32 rounded-3xl object-fill "/>
+            <button className="flex flex-col justify-start items-center w-60 h-56 rounded-3xl text-white hover:bg-gray-800 ease-in-out duration-500 hover:text-black">
+                <div className="flex justify-center items-center w-56 h-36">
+                <img src={game.background_image} alt="Game"  className="w-56 h-36 rounded-3xl object-fill  "/>
                 </div>
-                <div className="flex flex-row w-52 justify-between m-2">
+                <div className="flex flex-row w-52 h-20 justify-between mt-2">
                     <h1>{game.name}</h1>
-                    <p>$50</p>
+                    <span className="flex"><AiFillStar className="mt-1"/>{game.rating}</span>
                 </div>
             </button>
             </div>
