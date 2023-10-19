@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Skeleton from "react-loading-skeleton";
 import LoadSkeleton from "./LoadSkeleton.tsx";
+import Skeleton from "react-loading-skeleton";
 function GameDiv(){
     const[games, setGames] = useState([])
     const[isLoading, setIsLoading] = useState(() => {return true;});
