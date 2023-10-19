@@ -5,13 +5,13 @@ import Icon from "./Icon.tsx"
 import { motion, AnimatePresence} from "framer-motion";
 function SideNav() {
     const windowWidth = window.innerWidth;
-    const[menu, setMenu] = useState(() => { if(windowWidth >= 1024){
+    const[menu, setMenu] = useState(() => { if(windowWidth >= 1800){
             return false;
         }
         else{
             return true;
         }});
-    const[but, setBut] = useState(() => { if(windowWidth >= 1024){
+    const[but, setBut] = useState(() => { if(windowWidth >= 1800){
 
             return false;
         }
@@ -20,7 +20,7 @@ function SideNav() {
         }});
     const[click, setClick] = useState(() => {return false;});
     
-    const[icon, setIcon] = useState(() => { if(windowWidth >= 1024){
+    const[icon, setIcon] = useState(() => { if(windowWidth >= 1800){
             return false;
         }
         else{
@@ -28,7 +28,7 @@ function SideNav() {
         } });
     useEffect(() => {
         const closeMenu = () => {
-            if(window.innerWidth <= 1024){
+            if(window.innerWidth <= 1800){
                 setMenu(true);
                 setBut(true);
                 setIcon(true);
