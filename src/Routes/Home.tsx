@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import SearchBar from "../Components/SearchBar"
 import OtherOptions from "../Components/OtherOptions"
 import GameDiv from "../Components/GameDiv"
+import GamePrev from "../Components/GamePrev";
 
 function Home(){
  const windowWidth = window.innerWidth;
@@ -40,6 +41,7 @@ function Home(){
                 <SearchBar/>
                 <OtherOptions/>
             </div>
+                    <GamePrev/>
             <div className={`flex ${grid ? "justify-center " : "justify-end"}`}>
                     <GameDiv/>
             </div>

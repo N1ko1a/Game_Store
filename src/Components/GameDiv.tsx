@@ -8,7 +8,6 @@ function GameDiv(){
   fetch('https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page_size=50&page=1&ordering=-popularity')
     .then((res) => res.json())
     .then((data) => {
-      console.log(data.results);
         setGames(data.results);
         setIsLoading(false);
     })

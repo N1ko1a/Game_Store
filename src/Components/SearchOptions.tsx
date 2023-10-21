@@ -94,7 +94,7 @@ function SearchOptions() {
 
 
     return (
-        <motion.div className="flex flex-wrap justify-evenly relative  max-w-xl min-w-fit rounded-2xl bg-gray-800 mt-10 border-2 border-gray-900"   >
+        <motion.div className="flex flex-wrap justify-evenly relative max-w-xl min-w-fit rounded-2xl bg-gray-800 mt-10 border-2 border-gray-900"   >
             <div>
                 <button
                     onClick={toggleGenerClick}
