@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import GameCart from "./GameCart";
 import ReactPaginate from "react-paginate";
+import LoadSkeleton from "./LoadSkeleton";
 
 function GameDisplay() {
   const [games, setGames] = useState([]);
@@ -34,7 +35,7 @@ function GameDisplay() {
       <div className="grid xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 gap-10 mt-20 mr-20 ml-20 justify-center items-center overflow-hidden">
         {isLoading ? (
           Array.from({ length: itemsPerPage }).map((_, index) => (
-            <h1 key={index}>Loading.....</h1>
+            <LoadSkeleton/>
           ))
         ) : (
           games.map((game) => (
@@ -47,20 +48,26 @@ function GameDisplay() {
           ))
         )}
       </div>
+            <div className="flex justify-center  items-center">
 
-      <ReactPaginate
-                className="flex flex-row justify-center items-center w-96 h-10 p-2"
-        previousLabel={"Previous"}
-        nextLabel={"Next"}
-        breakLabel={"..."}
-        pageCount={5} // Set to 5 for 5 pages
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
-        onPageChange={handlePageClick}
-        containerClassName={"pagination"}
-        subContainerClassName={"pages pagination"}
-        activeClassName={"active"}
-      />
+     <ReactPaginate
+  previousLabel={"Previous"}
+  nextLabel={"Next"}
+  breakLabel={"..."}
+  pageCount={100} // Set to 5 for 5 pages
+  marginPagesDisplayed={2}
+  pageRangeDisplayed={5}
+  onPageChange={handlePageClick}
+  containerClassName={"flex flex-row text-white justify-between items-center w-96 h-10 p-2"} // Apply Tailwind classes to the container
+  subContainerClassName={"pages pagination"}
+  activeClassName={"active"}
+  previousClassName={"hover:text-black ease-in-out duration-300"} // Style the "Previous" button
+  nextClassName={" hover:text-black ease-in-out duration-300"} // Style the "Next" button
+  pageClassName={" hover:text-black ease-in-out duration-300"} // Style the page numbers
+  breakClassName={""} // Style the ellipsis ("...") element
+/>
+
+      </div>
     </div>
   );
 }

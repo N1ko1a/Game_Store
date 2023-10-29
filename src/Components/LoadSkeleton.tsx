@@ -1,5 +1,4 @@
 
-import React from "react";
 function LoadSkeleton(){
     return(
         //Ovaj je bio button i animate-pulse polako pulsira 
