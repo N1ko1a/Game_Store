@@ -1,9 +1,14 @@
 import { AiFillStar } from "react-icons/ai";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import Game from "../Routes/Game";
 function GameCart(props) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
+    const navigate = useNavigate();
+    const navigateToGame = () => {
+        navigate('Game', { state: { id: props.id } });
+    }
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
@@ -29,7 +34,7 @@ function GameCart(props) {
   };
 
   return (
-    <button className="flex flex-col justify-start items-center w-60 h-56 rounded-3xl text-white hover:bg-gray-800 ease-in-out duration-500 hover:text-black">
+    <button className="flex flex-col justify-start items-center w-60 h-56 rounded-3xl text-white hover:bg-gray-800 ease-in-out duration-500 hover:text-black" onClick={navigateToGame}>
       <div style={imageContainerStyle}>
         <img
           src={props.background}

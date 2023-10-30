@@ -40,11 +40,13 @@ function GameDisplay() {
         ) : (
           games.map((game) => (
             <GameCart
-              key={game.id}
+              id={game.id}
+
               background={game.background_image}
               name={game.name}
               rating={game.rating}
             />
+
           ))
         )}
       </div>

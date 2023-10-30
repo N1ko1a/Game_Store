@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import LoadSkeleton from "./LoadSkeleton";
 import { motion } from "framer-motion";
+import LoadingPrev from "./LoadingPrev";
 
 function GamePrev(){
     const[games, setGames] = useState([]);
@@ -25,7 +26,6 @@ function GamePrev(){
 
     useEffect(() =>{
 
-                console.log("Ovo gledas: " + ref.current.scrollWidth + ref.current.offsetWidth)
                 setWidth(ref.current.scrollWidth - ref.current.offsetWidth)
 
     })
@@ -35,7 +35,7 @@ function GamePrev(){
 
            {isLoading ? (
         Array.from({ length: 10 }).map((_, index) => (
-          <LoadSkeleton key={index} />
+          <LoadingPrev key={index} />
         ))
       ) : (
          games.map((game) => (
