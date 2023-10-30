@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "background-image-on-load": "^1.1.0",
     "blurhash": "^2.0.5",
     "framer-motion": "^10.16.4",
     "react": "^18.2.0",
