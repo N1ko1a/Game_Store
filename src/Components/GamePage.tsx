@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import LoadSkeleton from "./LoadSkeleton";
 import { motion } from "framer-motion";
 import {  AiFillLeftCircle,AiOutlineDesktop,AiOutlineSetting,AiOutlineTags,AiOutlineGlobal} from "react-icons/ai";
+import LoadingGame from "./LoadingGame";
 
 function GamePage(props) {
     const [games, setGames] = useState(null); // Initialize as null
@@ -23,7 +24,7 @@ function GamePage(props) {
     return (
         <div className="flex flex-col h-3/4 justify-start mt-20 ml-10">
             {isLoading ? (
-                <LoadSkeleton /> // Display a loading indicator
+                <LoadingGame /> // Display a loading indicator
             ) : games ? (
                     <div>
                         <div className="text-4xl font-bold text-white">
