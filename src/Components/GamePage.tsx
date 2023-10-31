@@ -22,7 +22,7 @@ function GamePage(props) {
     }, [props]);
 
     return (
-        <div className="flex flex-col h-3/4 justify-start mt-20 ml-10">
+        <div className="flex flex-col h-3/4 justify-start mt-28 ml-10">
             {isLoading ? (
                 <LoadingGame /> // Display a loading indicator
             ) : games ? (

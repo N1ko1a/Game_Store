@@ -1,6 +1,7 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState} from "react";
 import { motion } from "framer-motion";
 import LoadingPrev from "./LoadingPrev";
+import { useNavigate } from "react-router-dom";
 
 function GamePrev() {
     const [games, setGames] = useState([]);
@@ -31,6 +32,11 @@ function GamePrev() {
         console.log("Image is loaded");
     };
 
+    const navigate = useNavigate();
+    const navigateToGame = (game) => {
+  navigate('Game', { state: { id: game.id } });
+};
+
     return (
         <motion.div ref={ref} className="flex flex-row mt-20 ml-5 overflow-hidden">
             <motion.div className="flex  mt-14" drag="x" dragConstraints={{ right: 0, left: -width }}>
@@ -39,7 +45,7 @@ function GamePrev() {
                 ) : (
                     games.map((game) => (
                         <motion.div
-                            key={game.id}
+                            id = {game.id}
                             className={`min-w-custom h-96 flex items-end  rounded-3xl m-5 `}
                             style={{
                                 backgroundImage: `url(${game.background_image})`,
@@ -51,7 +57,7 @@ function GamePrev() {
                         >
                             <motion.div className="text-white ml-5 mb-3">
                                 <h1 className="text-4xl font-bold w-1/2 mb-5">{game.name}</h1>
-                                <button className="bg-white text-black w-28 h-10 rounded-xl">See more</button>
+                                <button className="bg-white text-black w-28 h-10 rounded-xl" onClick={() => navigateToGame(game)} >See more</button>
                             </motion.div>
                                 {/* Ovaj img tag sluzi samo da prati da li se slika ucitala i da promeni stanje ucitavanja, a postavili smo display da bude none da ne bih duplirali sliku. Jer u suprotnom posto je slika background pa ne mozeo da pratimo onLoad bice uvek u fazi ucitavanja i uvek ce da bude blur*/}
                             <img
