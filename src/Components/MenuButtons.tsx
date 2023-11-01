@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 
 function MenuButtons({ onGenreChange, selectedGenre }) {
   const [genres, setGenres] = useState([]);

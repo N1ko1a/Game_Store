@@ -1,10 +1,10 @@
 import Options from "./Options";
 import SearchBar from "./SearchBar";
 
-function TopNav(){
+function TopNav({onSearchChange}){
     return(
         <div className="flex flex-row justify-between z-10  ml-20">
-            <SearchBar/>
+            <SearchBar onSearchChange={onSearchChange} />
             <Options/>
         </div>
     );

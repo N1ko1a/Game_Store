@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiOutlineCaretUp, AiOutlineCaretDown, AiFillStar } from "react-icons/ai";
 
 import { motion, AnimatePresence} from "framer-motion";
@@ -7,26 +7,76 @@ function SearchOptions() {
     const [platformClick, setPlatformClick] = useState(() => {return false});
     const [ratingClick, setRatingClick] = useState(() => {return false});
     const [ageClick, setAgeClick] = useState(() => {return false});
-    const [priceClick, setPriceClick] = useState(() => {return false});
+    const [storeClick, setStoreClick] = useState(() => {return false});
 
     const [selectedGener, setSelectedGener] = useState(() => {return null;});
     const [selectedPlatform, setSelectedPlatform] = useState(() => {return null;});
     const [selectedRating, setSelectedRating] = useState(() => {return 0;});
     const [selectedAge, setSelectedAge] = useState(() => {return null;});
-    const [selectedPrice, setSelectedPrice] = useState(() => {return null;});
+    const [selectedStore, setSelectedStore] = useState(() => {return null;});
 
-    const genre = ["Action", "Adventure", "RPG", "FPS", "Sports", "Racing", "Strategy", "Casual Games"];
-    const platform =  ["PC", "Xbox", "PlayStation", "Nitendo Switch", "Mobile", "VR"];
+    const [genres, setGenres] = useState([]);
+    const [store, setStore] = useState([]);
+    const [platform, setPlatform] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const apiURLgeners = "https://api.rawg.io/api/genres?key=4557ebdc3256470e8e4b78f25d277a04";
+
+    fetch(apiURLgeners)
+      .then((res) => res.json())
+      .then((data) => {
+        setGenres(data.results);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error: ', error);
+        setIsLoading(false);
+      });
+  }, []);
+  useEffect(() => {
+    setIsLoading(true);
+    const apiURLplatform = "https://api.rawg.io/api/platforms?key=4557ebdc3256470e8e4b78f25d277a04"
+
+    fetch(apiURLplatform)
+      .then((res) => res.json())
+      .then((data) => {
+        setPlatform(data.results);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error: ', error);
+        setIsLoading(false);
+      });
+  }, []);
+    useEffect(() =>
+{
+    setIsLoading(true);
+    const apiURLstores = "https://api.rawg.io/api/stores?key=4557ebdc3256470e8e4b78f25d277a04"
+
+    fetch(apiURLstores)
+      .then((res) => res.json())
+      .then((data) => {
+        setStore(data.results);
+        setIsLoading(false);
+                console.log(data.store)
+      })
+      .catch((error) => {
+        console.error('Error: ', error);
+        setIsLoading(false);
+      });
+  }, []);
+
     const rating = [1 , 2, 3, 4, 5];
     const age = ["Everyone", "Everyone +10", "Teen", "Mature", "Adults Only"];
-    const price = ["Any Price", "FreeToPlay", "Less then $20", "$20 - $50", "$50-$100", "Over $100"];
-
+    
     //Tracking when we click the dropdown menu for Gener
     const toggleGenerClick = () => {
     {platformClick ? setPlatformClick(false) : null}
     {ageClick ? setAgeClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {ratingClick ? setRatingClick(false): null }
-    {priceClick ? setPriceClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
+    {storeClick ? setStoreClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
         setGenerClick(!generClick);
     };
     //Tracking when we click the dropdown menu for Platform
@@ -34,7 +84,7 @@ function SearchOptions() {
     {generClick ? setGenerClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {ageClick ? setAgeClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {ratingClick ? setRatingClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
-    {priceClick ? setPriceClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
+    {storeClick ? setStoreClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
         setPlatformClick(!platformClick);
     };
 
@@ -42,7 +92,7 @@ function SearchOptions() {
     {platformClick ? setPlatformClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {generClick ? setGenerClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {ageClick ? setAgeClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
-    {priceClick ? setPriceClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
+    {storeClick ? setStoreClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
         setRatingClick(!ratingClick); 
     };
 
@@ -50,16 +100,16 @@ function SearchOptions() {
     {platformClick ? setPlatformClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {generClick ? setGenerClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {ratingClick ? setRatingClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
-    {priceClick ? setPriceClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
+    {storeClick ? setStoreClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
         setAgeClick(!ageClick); 
     };
 
-    const togglePriceClick = () => {
+    const toggleStoreClick = () => {
     {platformClick ? setPlatformClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {generClick ? setGenerClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {ratingClick ? setRatingClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
     {ageClick ? setAgeClick(false): null} //logic for closing any other dropdown menu so that there are not 2 or more opened at the same time
-        setPriceClick(!priceClick); 
+        setStoreClick(!storeClick); 
     };
 
 
@@ -87,9 +137,9 @@ function SearchOptions() {
         setAgeClick(false);
     }
 
-    const handlePriceClick = (chose) =>{
-        setSelectedPrice(chose);
-        setPriceClick(false);
+    const handleStoreClick = (chose) =>{
+        setSelectedStore(chose);
+        setStoreClick(false);
     }
 
 
@@ -112,14 +162,14 @@ function SearchOptions() {
                             transition={{duration: 0.3}}
                             className="bg-gray-700 absolute ml-5 w-44 rounded-lg flex flex-col items-center text-white font-medium text-l"
                         >
-{/* Iterating through the list and outputting them */}
-                            {genre.map((item) => (
+{/* IteratsetPlatformgh the list and outputting them */}
+                            {genres.map((item) => (
                                 <div
                                     key={item}
-                                    onClick={() => handleGenerClick(item)}
+                                    onClick={() => handleGenerClick(item.name)}
 
                                 >
-                                    <p className="cursor-pointer hover:text-black duration-300 text-l font-medium">{item}</p>
+                                    <p className="cursor-pointer hover:text-black duration-300 text-l font-medium">{item.name}</p>
                                 </div>
                             )   )}
                         </motion.div>
@@ -141,9 +191,9 @@ function SearchOptions() {
                             
                         {platform.map((item) => (
                             <div
-                                onClick={() => handlePlatformClick(item)}
+                                onClick={() => handlePlatformClick(item.name)}
                             >
-                                <p className="cursor-pointer hover:text-black duration-300 text-l font-medium">{item}</p>
+                                <p className="cursor-pointer hover:text-black duration-300 text-l font-medium">{item.name}</p>
                             </div>
                         ))}
                     </motion.div>
@@ -222,14 +272,14 @@ function SearchOptions() {
             {/*Price*/}
             <div>
                 <button
-                    onClick={togglePriceClick}
+                    onClick={toggleStoreClick}
                     className="bg-gray-700 m-5 w-44 h-7 p-4 flex items-center justify-between font-medium text-l text-white rounded-lg tracking-wider border-4 border-transparent active:text-white active:border-white duration-300"
                 >
-                    { selectedPrice || "Price"} {priceClick ? <AiOutlineCaretUp /> : <AiOutlineCaretDown />}
+                    { selectedStore || "Store"} {storeClick ? <AiOutlineCaretUp /> : <AiOutlineCaretDown />}
                 </button>
                 <AnimatePresence>
                     {/*conditional rendering if generClick is true the expresion will be shown if its false it will not be shown*/}
-                    {priceClick && (
+                    {storeClick && (
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -238,13 +288,13 @@ function SearchOptions() {
                             className="bg-gray-700 absolute ml-5 w-44 rounded-lg flex flex-col items-center text-white "
                         >
 {/* Iterating through the list and outputting them */}
-                            {price.map((item) => (
+                            {store.map((item) => (
                                 <div
                                     key={item}
-                                    onClick={() => handlePriceClick(item)}
+                                    onClick={() => handleStoreClick(item.name)}
 
                                 >
-                                    <p className="cursor-pointer hover:text-black duration-300 flex justify-between text-l font-medium ">{item}</p>
+                                    <p className="cursor-pointer hover:text-black duration-300 flex justify-between text-l font-medium ">{item.name}</p>
                                 </div>
                             )   )}
                         </motion.div>

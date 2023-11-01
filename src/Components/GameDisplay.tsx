@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import GameCart from "./GameCart";
 import ReactPaginate from "react-paginate";
 import LoadSkeleton from "./LoadSkeleton";
 import MenuButtons from "./MenuButtons";
 
-function GameDisplay() {
+function GameDisplay({searchValue}) {
   const [games, setGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
@@ -22,6 +22,7 @@ function GameDisplay() {
       .then((data) => {
         setGames(data.results);
         setIsLoading(false);
+                
       })
       .catch((error) => {
         console.error('Error: ', error);
@@ -36,7 +37,7 @@ function GameDisplay() {
   const handleGenreChange = (genre) => {
     setSelectedGenre(genre);
   };
-
+ 
   return (
     <div>
       <MenuButtons onGenreChange={handleGenreChange} selectedGenre={selectedGenre} />
@@ -46,7 +47,11 @@ function GameDisplay() {
             <LoadSkeleton />
           ))
         ) : (
-          games.map((game) => (
+          games.filter((item) => {
+                return searchValue.toLowerCase() === ''
+                  ? item
+                  : item.name.toLowerCase().includes(searchValue);
+              }).map((game) => (
             <GameCart
               id={game.id}
               background={game.background_image}
