@@ -7,9 +7,13 @@ import TopNav from "../Components/TopNav";
 function Home() {
   const [searchValue, setSearchValue] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState("");
+  const [selectedGener, setSelectedGener] = useState("");
 
   const handleOnPlatformSelect = (value) => {
     setSelectedPlatform(value);
+  };
+  const handleOnGenerSelect = (value) => {
+    setSelectedGener(value);
   };
 
   const handleSearchChange = (value) => {
@@ -23,10 +27,11 @@ function Home() {
         <TopNav
           onSearchChange={handleSearchChange}
           onPlatformSelect={handleOnPlatformSelect} // Changed the prop name
+                    onGenerSelect={handleOnGenerSelect}
         />
         <GamePrev />
-                {/*Filter platforme*/}
-        <GameDisplay searchValue={searchValue} selectedPlatform={selectedPlatform} /> {/* Passed the selected platform */}
+                {}
+        <GameDisplay searchValue={searchValue} selectedPlatform={selectedPlatform} selectedGenreSearch = {selectedGener} /> {/* Passed the selected platform */}
       </div>
     </div>
   );

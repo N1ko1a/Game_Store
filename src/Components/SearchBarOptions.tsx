@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineCaretUp, AiOutlineCaretDown, AiFillStar } from "react-icons/ai";
 
 import { motion, AnimatePresence} from "framer-motion";
-function SearchOptions({onPlatformSelect}) {
+function SearchOptions({onPlatformSelect, onGenerSelect}) {
     const [generClick, setGenerClick] = useState(() => {return false;});
     const [platformClick, setPlatformClick] = useState(() => {return false});
     const [ratingClick, setRatingClick] = useState(() => {return false});
@@ -124,6 +124,11 @@ function SearchOptions({onPlatformSelect}) {
         setGenerClick(false);
 
     };
+        // FIlter gener
+    const sendGener = (chose) => {
+        onGenerSelect(chose);
+        console.log("Ovde: " + chose);
+    }
 //Placing the selected option and closing the dropdown menu
     const handlePlatformClick = (chose) =>{
         setSelectedPlatform(chose);
@@ -139,9 +144,18 @@ function SearchOptions({onPlatformSelect}) {
         setRatingClick(false);
     }
 
+        // FIlter Rating
+    const sendRating = (chose) => {
+        onRatingSelect(chose);
+    }
+
     const handleAgeClick = (chose) =>{
         setSelectedAge(chose);
         setAgeClick(false);
+    }
+        // FIlter Age
+    const sendAge = (chose) => {
+        onAgeSelect(chose);
     }
 
     const handleStoreClick = (chose) =>{
@@ -149,6 +163,10 @@ function SearchOptions({onPlatformSelect}) {
         setStoreClick(false);
     }
 
+        // FIlter Store
+    const sendStore = (chose) => {
+        onStoreSelect(chose);
+    }
 
     return (
         <motion.div className="flex flex-wrap fixed justify-evenly  w-500 h-64 rounded-2xl bg-gray-800 mt-10 border-2 border-gray-900"   >
@@ -170,13 +188,13 @@ function SearchOptions({onPlatformSelect}) {
                             className="bg-gray-700 absolute ml-5 w-44 rounded-lg flex flex-col items-center text-white font-medium text-l"
                         >
 {/* IteratsetPlatformgh the list and outputting them */}
-                            {genres.map((item) => (
+                            {genres.map((itemg) => (
                                 <div
-                                    key={item}
-                                    onClick={() => handleGenerClick(item.name)}
+                                    key={itemg}
+                                    onClick={() => {handleGenerClick(itemg.name); sendGener(itemg.id) }}
 
                                 >
-                                    <p className="cursor-pointer hover:text-black duration-300 text-l font-medium">{item.name}</p>
+                                    <p className="cursor-pointer hover:text-black duration-300 text-l font-medium">{itemg.name}</p>
                                 </div>
                             )   )}
                         </motion.div>

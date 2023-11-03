@@ -4,7 +4,7 @@ import ReactPaginate from "react-paginate";
 import LoadSkeleton from "./LoadSkeleton";
 import MenuButtons from "./MenuButtons";
 
-function GameDisplay({searchValue, selectedPlatform}) {
+function GameDisplay({searchValue, selectedPlatform, selectedGenreSearch}) {
   const [games, setGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
@@ -15,23 +15,30 @@ function GameDisplay({searchValue, selectedPlatform}) {
     setIsLoading(true);
     const pageToFetch = currentPage + 1;
     const genreFilter = selectedGenre === "all" ? "" : `&genres=${selectedGenre}`;
+const genreFilterSearch = selectedGenreSearch  ? `&genres=${selectedGenreSearch}` : "" ;
+        if (selectedGenreSearch) {
+            setSelectedGenre(selectedGenreSearch)
+
+}
+
         // FIlter platforme
 const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
 
-    const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}`;
+    const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}`;
 
     fetch(apiURL)
       .then((res) => res.json())
       .then((data) => {
         setGames(data.results);
         setIsLoading(false);
+                console.log(data.results)
                 
       })
       .catch((error) => {
         console.error('Error: ', error);
         setIsLoading(false);
       });
-  }, [currentPage, selectedGenre, selectedPlatform]);
+  }, [currentPage, selectedGenre, selectedPlatform, selectedGenreSearch]);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
