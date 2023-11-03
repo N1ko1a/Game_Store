@@ -130,6 +130,7 @@ function SearchOptions({onPlatformSelect}) {
         setPlatformClick(false);
     }
 
+        // FIlter platforme
     const sendPlatform = (chose) => {
         onPlatformSelect(chose);
     }

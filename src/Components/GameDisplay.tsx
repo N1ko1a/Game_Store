@@ -15,7 +15,7 @@ function GameDisplay({searchValue, selectedPlatform}) {
     setIsLoading(true);
     const pageToFetch = currentPage + 1;
     const genreFilter = selectedGenre === "all" ? "" : `&genres=${selectedGenre}`;
-        // Set platformFilter to "all" by default and update it when selectedPlatform has a value
+        // FIlter platforme
 const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
 
     const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}`;

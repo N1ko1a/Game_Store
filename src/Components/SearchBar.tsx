@@ -47,6 +47,8 @@ function SearchBar({ onSearchChange, onPlatformSelect }) {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
+                        
+         {/*FIlter platforme*/}
             <SearchBarOptions onPlatformSelect={onPlatformSelect} />
           </motion.div>
         )}

@@ -25,6 +25,7 @@ function Home() {
           onPlatformSelect={handleOnPlatformSelect} // Changed the prop name
         />
         <GamePrev />
+                {/*Filter platforme*/}
         <GameDisplay searchValue={searchValue} selectedPlatform={selectedPlatform} /> {/* Passed the selected platform */}
       </div>
     </div>
