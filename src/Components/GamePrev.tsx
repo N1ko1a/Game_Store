@@ -29,7 +29,6 @@ function GamePrev() {
 
     const handleImageLoad = () => {
         setImageLoaded(true);
-        console.log("Image is loaded");
     };
 
     const navigate = useNavigate();

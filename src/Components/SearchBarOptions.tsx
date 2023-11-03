@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineCaretUp, AiOutlineCaretDown, AiFillStar } from "react-icons/ai";
 
 import { motion, AnimatePresence} from "framer-motion";
-function SearchOptions() {
+function SearchOptions({onPlatformSelect}) {
     const [generClick, setGenerClick] = useState(() => {return false;});
     const [platformClick, setPlatformClick] = useState(() => {return false});
     const [ratingClick, setRatingClick] = useState(() => {return false});
@@ -20,6 +20,7 @@ function SearchOptions() {
     const [platform, setPlatform] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    
   useEffect(() => {
     setIsLoading(true);
     const apiURLgeners = "https://api.rawg.io/api/genres?key=4557ebdc3256470e8e4b78f25d277a04";
@@ -44,6 +45,7 @@ function SearchOptions() {
       .then((data) => {
         setPlatform(data.results);
         setIsLoading(false);
+                console.log(data.results)
       })
       .catch((error) => {
         console.error('Error: ', error);
@@ -127,6 +129,10 @@ function SearchOptions() {
         setSelectedPlatform(chose);
         setPlatformClick(false);
     }
+
+    const sendPlatform = (chose) => {
+        onPlatformSelect(chose);
+    }
     const handleRatingClick = (chose) =>{
         setSelectedRating(chose);
         setRatingClick(false);
@@ -191,7 +197,10 @@ function SearchOptions() {
                             
                         {platform.map((item) => (
                             <div
-                                onClick={() => handlePlatformClick(item.name)}
+                                onClick={() => {
+  handlePlatformClick(item.name);
+  sendPlatform(item.id);
+}}
                             >
                                 <p className="cursor-pointer hover:text-black duration-300 text-l font-medium">{item.name}</p>
                             </div>
