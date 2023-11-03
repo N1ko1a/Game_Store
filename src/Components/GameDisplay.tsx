@@ -10,7 +10,7 @@ function GameDisplay({searchValue, selectedPlatform}) {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedGenre, setSelectedGenre] = useState("all"); // Default to "all" genres
   const itemsPerPage = 20;
-    
+   //test 
   useEffect(() => {
     setIsLoading(true);
     const pageToFetch = currentPage + 1;
