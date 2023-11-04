@@ -10,7 +10,7 @@ function GameDisplay({ searchValue, selectedPlatform, selectedGenreSearch, selec
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedGenre, setSelectedGenre] = useState("all");
   const itemsPerPage = 20;
-    const [vrednost, setVrednost] = useState(4);
+    const [vrednost, setVrednost] = useState(6);
    
 
   useEffect(() => {
@@ -19,8 +19,25 @@ function GameDisplay({ searchValue, selectedPlatform, selectedGenreSearch, selec
     const genreFilter = selectedGenre === "all" ? "" : `&genres=${selectedGenre}`;
     const genreFilterSearch = selectedGenreSearch ? `&genres=${selectedGenreSearch}` : "";
     const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
-   if(selectedRating ===4){
             setVrednost(4);
+        switch (selectedRating) {
+            case 1:
+                    setVrednost(1);
+                break;
+            case 2:
+                setVrednost(2);
+                break;
+            case 3:
+                setVrednost(3);
+                break;
+            case 4:
+                setVrednost(4);
+                break;
+            case 5:
+                setVrednost(5);
+                break;
+            default:
+                break;
         }
   
 
@@ -58,7 +75,7 @@ function GameDisplay({ searchValue, selectedPlatform, selectedGenreSearch, selec
         ) : (
          games.filter((item) => {
   const searchCondition = searchValue.toLowerCase() === "" || item.name.toLowerCase().includes(searchValue);
-  const ratingCondition = item.rating >= vrednost;
+  const ratingCondition = item.rating < vrednost || (item.rating >= vrednost && item.rating <= vrednost+1);
   return searchCondition && ratingCondition;
 })
             .map((game) => (
