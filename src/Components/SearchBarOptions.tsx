@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineCaretUp, AiOutlineCaretDown, AiFillStar } from "react-icons/ai";
 
 import { motion, AnimatePresence} from "framer-motion";
-function SearchOptions({onPlatformSelect, onGenerSelect, onRatingSelect}) {
+function SearchOptions({onPlatformSelect, onGenerSelect, onRatingSelect, onAgeSelect, onStoreSelect}) {
     const [generClick, setGenerClick] = useState(() => {return false;});
     const [platformClick, setPlatformClick] = useState(() => {return false});
     const [ratingClick, setRatingClick] = useState(() => {return false});
@@ -45,7 +45,6 @@ function SearchOptions({onPlatformSelect, onGenerSelect, onRatingSelect}) {
       .then((data) => {
         setPlatform(data.results);
         setIsLoading(false);
-                console.log(data.results)
       })
       .catch((error) => {
         console.error('Error: ', error);
@@ -62,7 +61,7 @@ function SearchOptions({onPlatformSelect, onGenerSelect, onRatingSelect}) {
       .then((data) => {
         setStore(data.results);
         setIsLoading(false);
-                console.log(data.store)
+                    console.log(data.results)
       })
       .catch((error) => {
         console.error('Error: ', error);
@@ -146,7 +145,6 @@ function SearchOptions({onPlatformSelect, onGenerSelect, onRatingSelect}) {
         // FIlter Rating
     const sendRating = (chose) => {
         onRatingSelect(chose);
-        console.log(chose);
     }
 
 
@@ -290,7 +288,7 @@ function SearchOptions({onPlatformSelect, onGenerSelect, onRatingSelect}) {
                             {age.map((item) => (
                                 <div
                                     key={item}
-                                    onClick={() => handleAgeClick(item)}
+                                    onClick={() => {handleAgeClick(item); sendAge(item);}}
 
                                 >
                                     <p className="cursor-pointer hover:text-black duration-300 flex justify-between font-medium text-l">{item}</p>
@@ -323,7 +321,7 @@ function SearchOptions({onPlatformSelect, onGenerSelect, onRatingSelect}) {
                             {store.map((item) => (
                                 <div
                                     key={item}
-                                    onClick={() => handleStoreClick(item.name)}
+                                    onClick={() => {handleStoreClick(item.name); sendStore(item.id);}}
 
                                 >
                                     <p className="cursor-pointer hover:text-black duration-300 flex justify-between text-l font-medium ">{item.name}</p>

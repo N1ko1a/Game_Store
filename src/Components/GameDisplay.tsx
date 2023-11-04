@@ -4,7 +4,7 @@ import ReactPaginate from "react-paginate";
 import LoadSkeleton from "./LoadSkeleton";
 import MenuButtons from "./MenuButtons";
 
-function GameDisplay({ searchValue, selectedPlatform, selectedGenreSearch, selectedRating }) {
+function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGenreSearch, selectedRating, selectedAge }) {
   const [games, setGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
@@ -18,6 +18,7 @@ function GameDisplay({ searchValue, selectedPlatform, selectedGenreSearch, selec
     const pageToFetch = currentPage + 1;
     const genreFilter = selectedGenre === "all" ? "" : `&genres=${selectedGenre}`;
     const genreFilterSearch = selectedGenreSearch ? `&genres=${selectedGenreSearch}` : "";
+    const storeFilter = selectedStore ? `&stores=${selectedStore}` : "";
     const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
             setVrednost(4);
         switch (selectedRating) {
@@ -41,7 +42,7 @@ function GameDisplay({ searchValue, selectedPlatform, selectedGenreSearch, selec
         }
   
 
-    const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}`;
+    const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}`;
 
     fetch(apiURL)
       .then((res) => res.json())
@@ -54,7 +55,7 @@ function GameDisplay({ searchValue, selectedPlatform, selectedGenreSearch, selec
         console.error('Error: ', error);
         setIsLoading(false);
       });
-  }, [currentPage, vrednost, selectedGenre, selectedPlatform, selectedGenreSearch, selectedRating]);
+  }, [currentPage, vrednost, selectedGenre, selectedPlatform, selectedGenreSearch, selectedRating, selectedAge, selectedStore]);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
@@ -76,7 +77,11 @@ function GameDisplay({ searchValue, selectedPlatform, selectedGenreSearch, selec
          games.filter((item) => {
   const searchCondition = searchValue.toLowerCase() === "" || item.name.toLowerCase().includes(searchValue);
   const ratingCondition = item.rating < vrednost || (item.rating >= vrednost && item.rating <= vrednost+1);
-  return searchCondition && ratingCondition;
+    //TypeError: Cannot read properties of null," it suggests that some of the esrb_rating properties in your data might be null or undefined.
+                            //zato smo dodali items.esrb_rating da proverimo da li je true da li u opste poseduju vrednost
+const ageCondition = item.esrb_rating && ( selectedAge === "" ?  item.esrb_rating.name !== selectedAge : item.esrb_rating.name === selectedAge  );
+
+  return searchCondition && ratingCondition&&ageCondition;
 })
             .map((game) => (
               <GameCart id={game.id} background={game.background_image} name={game.name} rating={game.rating} />

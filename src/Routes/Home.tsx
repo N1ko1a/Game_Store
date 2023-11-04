@@ -9,9 +9,17 @@ function Home() {
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedGener, setSelectedGener] = useState("");
   const [selectedRating, setSelectedRating] = useState("");
+  const [selectedAge, setSelectedAge] = useState("");
+  const [selectedStore, setSelectedStore] = useState("");
 
   const handleOnPlatformSelect = (value) => {
     setSelectedPlatform(value);
+  };
+  const handleOnStoreSelect = (value) => {
+    setSelectedStore(value);
+  };
+  const handleOnAgeSelect = (value) => {
+    setSelectedAge(value);
   };
   const handleOnGenerSelect = (value) => {
     setSelectedGener(value);
@@ -34,10 +42,12 @@ function Home() {
           onPlatformSelect={handleOnPlatformSelect} // Changed the prop name
                     onGenerSelect={handleOnGenerSelect}
                     onRatingSelect={handleRatingChange}
+                    onAgeSelect={handleOnAgeSelect}
+                    onStoreSelect={handleOnStoreSelect}
         />
         <GamePrev />
                 {}
-        <GameDisplay searchValue={searchValue} selectedPlatform={selectedPlatform} selectedRating = {selectedRating} selectedGenreSearch = {selectedGener} /> {/* Passed the selected platform */}
+        <GameDisplay searchValue={searchValue} selectedStore = {selectedStore} selectedAge = {selectedAge} selectedPlatform={selectedPlatform} selectedRating = {selectedRating} selectedGenreSearch = {selectedGener} /> {/* Passed the selected platform */}
       </div>
     </div>
   );
