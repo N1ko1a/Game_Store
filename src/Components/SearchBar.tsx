@@ -4,7 +4,7 @@ import SearchBarOptions from "./SearchBarOptions.tsx";
 
 import { motion, AnimatePresence } from "framer-motion";
 
-function SearchBar({ onSearchChange, onPlatformSelect, onGenerSelect }) {
+function SearchBar({ onSearchChange, onPlatformSelect, onGenerSelect, onRatingSelect }) {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -49,7 +49,7 @@ function SearchBar({ onSearchChange, onPlatformSelect, onGenerSelect }) {
           >
                         
          {/*FIlter platforme*/}
-            <SearchBarOptions onPlatformSelect={onPlatformSelect} onGenerSelect={onGenerSelect} />
+            <SearchBarOptions onPlatformSelect={onPlatformSelect} onGenerSelect={onGenerSelect} onRatingSelect={onRatingSelect} />
           </motion.div>
         )}
       </AnimatePresence>

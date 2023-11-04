@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineCaretUp, AiOutlineCaretDown, AiFillStar } from "react-icons/ai";
 
 import { motion, AnimatePresence} from "framer-motion";
-function SearchOptions({onPlatformSelect, onGenerSelect}) {
+function SearchOptions({onPlatformSelect, onGenerSelect, onRatingSelect}) {
     const [generClick, setGenerClick] = useState(() => {return false;});
     const [platformClick, setPlatformClick] = useState(() => {return false});
     const [ratingClick, setRatingClick] = useState(() => {return false});
@@ -127,7 +127,6 @@ function SearchOptions({onPlatformSelect, onGenerSelect}) {
         // FIlter gener
     const sendGener = (chose) => {
         onGenerSelect(chose);
-        console.log("Ovde: " + chose);
     }
 //Placing the selected option and closing the dropdown menu
     const handlePlatformClick = (chose) =>{
@@ -147,7 +146,9 @@ function SearchOptions({onPlatformSelect, onGenerSelect}) {
         // FIlter Rating
     const sendRating = (chose) => {
         onRatingSelect(chose);
+        console.log(chose);
     }
+
 
     const handleAgeClick = (chose) =>{
         setSelectedAge(chose);
@@ -253,7 +254,10 @@ function SearchOptions({onPlatformSelect, onGenerSelect}) {
                             {rating.map((item) => (
                                 <div
                                     key={item}
-                                    onClick={() => handleRatingClick(item)}
+                                onClick={() => {
+                                        handleRatingClick(item);
+                                        sendRating(item);
+}}
 
                                 >
                                     <p className="cursor-pointer hover:text-black duration-300 flex font-medium text-l justify-between">{item} <AiFillStar className="mt-1"/></p>

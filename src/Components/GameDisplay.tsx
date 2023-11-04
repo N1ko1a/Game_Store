@@ -1,28 +1,28 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GameCart from "./GameCart";
 import ReactPaginate from "react-paginate";
 import LoadSkeleton from "./LoadSkeleton";
 import MenuButtons from "./MenuButtons";
 
-function GameDisplay({searchValue, selectedPlatform, selectedGenreSearch}) {
+function GameDisplay({ searchValue, selectedPlatform, selectedGenreSearch, selectedRating }) {
   const [games, setGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const [selectedGenre, setSelectedGenre] = useState("all"); // Default to "all" genres
+  const [selectedGenre, setSelectedGenre] = useState("all");
   const itemsPerPage = 20;
-   //test 
+    const [vrednost, setVrednost] = useState(4);
+   
+
   useEffect(() => {
     setIsLoading(true);
     const pageToFetch = currentPage + 1;
     const genreFilter = selectedGenre === "all" ? "" : `&genres=${selectedGenre}`;
-const genreFilterSearch = selectedGenreSearch  ? `&genres=${selectedGenreSearch}` : "" ;
-        if (selectedGenreSearch) {
-            setSelectedGenre(selectedGenreSearch)
-
-}
-
-        // FIlter platforme
-const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
+    const genreFilterSearch = selectedGenreSearch ? `&genres=${selectedGenreSearch}` : "";
+    const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
+   if(selectedRating ===4){
+            setVrednost(4);
+        }
+  
 
     const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}`;
 
@@ -31,14 +31,13 @@ const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
       .then((data) => {
         setGames(data.results);
         setIsLoading(false);
-                console.log(data.results)
-                
+        console.log(data.results);
       })
       .catch((error) => {
         console.error('Error: ', error);
         setIsLoading(false);
       });
-  }, [currentPage, selectedGenre, selectedPlatform, selectedGenreSearch]);
+  }, [currentPage, vrednost, selectedGenre, selectedPlatform, selectedGenreSearch, selectedRating]);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
@@ -47,31 +46,24 @@ const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
   const handleGenreChange = (genre) => {
     setSelectedGenre(genre);
   };
-    const handlePlatformChange = (platform) => {
-        setSelectedPlatform(platform);
-    };
- 
+
   return (
     <div>
-      <MenuButtons onGenreChange={handleGenreChange} selectedGenre={selectedGenre} />
+      <MenuButtons onGenreChange={handleGenreChange}  selectedGenre={selectedGenre}  />
       <div className="grid xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 gap-10 mt-5 mr-20 ml-20 justify-center items-center overflow-hidden">
         {isLoading ? (
           Array.from({ length: itemsPerPage }).map((_, index) => (
-            <LoadSkeleton />
+            <LoadSkeleton key={index} />
           ))
         ) : (
-          games.filter((item) => {
-                return searchValue.toLowerCase() === ''
-                  ? item
-                  : item.name.toLowerCase().includes(searchValue);
-              }).map((game) => (
-            <GameCart
-              id={game.id}
-              background={game.background_image}
-              name={game.name}
-              rating={game.rating}
-            />
-          ))
+         games.filter((item) => {
+  const searchCondition = searchValue.toLowerCase() === "" || item.name.toLowerCase().includes(searchValue);
+  const ratingCondition = item.rating >= vrednost;
+  return searchCondition && ratingCondition;
+})
+            .map((game) => (
+              <GameCart id={game.id} background={game.background_image} name={game.name} rating={game.rating} />
+            ))
         )}
       </div>
       <div className="flex justify-center items-center">

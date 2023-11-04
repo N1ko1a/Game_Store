@@ -8,6 +8,7 @@ function Home() {
   const [searchValue, setSearchValue] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedGener, setSelectedGener] = useState("");
+  const [selectedRating, setSelectedRating] = useState("");
 
   const handleOnPlatformSelect = (value) => {
     setSelectedPlatform(value);
@@ -20,6 +21,10 @@ function Home() {
     setSearchValue(value);
   };
 
+  const handleRatingChange = (value) => {
+    setSelectedRating(value);
+  };
+
   return (
     <div className="flex flex-row justify-center">
       <SideNav />
@@ -28,10 +33,11 @@ function Home() {
           onSearchChange={handleSearchChange}
           onPlatformSelect={handleOnPlatformSelect} // Changed the prop name
                     onGenerSelect={handleOnGenerSelect}
+                    onRatingSelect={handleRatingChange}
         />
         <GamePrev />
                 {}
-        <GameDisplay searchValue={searchValue} selectedPlatform={selectedPlatform} selectedGenreSearch = {selectedGener} /> {/* Passed the selected platform */}
+        <GameDisplay searchValue={searchValue} selectedPlatform={selectedPlatform} selectedRating = {selectedRating} selectedGenreSearch = {selectedGener} /> {/* Passed the selected platform */}
       </div>
     </div>
   );
