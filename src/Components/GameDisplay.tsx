@@ -77,9 +77,9 @@ function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGe
          games.filter((item) => {
   const searchCondition = searchValue.toLowerCase() === "" || item.name.toLowerCase().includes(searchValue);
   const ratingCondition = item.rating < vrednost || (item.rating >= vrednost && item.rating <= vrednost+1);
-    //TypeError: Cannot read properties of null," it suggests that some of the esrb_rating properties in your data might be null or undefined.
-                            //zato smo dodali items.esrb_rating da proverimo da li je true da li u opste poseduju vrednost
-const ageCondition = item.esrb_rating && ( selectedAge === "" ?  item.esrb_rating.name !== selectedAge : item.esrb_rating.name === selectedAge  );
+                        {/*If selectedAge is an empty string, the condition is immediately true, allowing all items to be displayed.
+If selectedAge is not an empty string, it checks if item.esrb_rating is defined and whether the name property of item.esrb_rating matches the selectedAge. If these conditions are met, the item is displayed.*/}
+const ageCondition = (selectedAge === "") || (item.esrb_rating && item.esrb_rating.name === selectedAge);
 
   return searchCondition && ratingCondition&&ageCondition;
 })
