@@ -11,7 +11,6 @@ function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGe
   const [selectedGenre, setSelectedGenre] = useState("all");
   const itemsPerPage = 20;
     const [vrednost, setVrednost] = useState(6);
-   
 
   useEffect(() => {
     setIsLoading(true);
@@ -20,7 +19,6 @@ function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGe
     const genreFilterSearch = selectedGenreSearch ? `&genres=${selectedGenreSearch}` : "";
     const storeFilter = selectedStore ? `&stores=${selectedStore}` : "";
     const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
-            setVrednost(4);
         switch (selectedRating) {
             case 1:
                     setVrednost(1);
@@ -42,7 +40,7 @@ function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGe
         }
   
 
-    const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}`;
+    const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}&search=${searchValue}`;
 
     fetch(apiURL)
       .then((res) => res.json())
@@ -55,7 +53,7 @@ function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGe
         console.error('Error: ', error);
         setIsLoading(false);
       });
-  }, [currentPage, vrednost, selectedGenre, selectedPlatform, selectedGenreSearch, selectedRating, selectedAge, selectedStore]);
+  }, [currentPage, vrednost, selectedGenre, selectedPlatform, selectedGenreSearch, selectedRating, selectedAge, selectedStore, searchValue]);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
@@ -75,13 +73,12 @@ function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGe
           ))
         ) : (
          games.filter((item) => {
-  const searchCondition = searchValue.toLowerCase() === "" || item.name.toLowerCase().includes(searchValue);
-  const ratingCondition = item.rating < vrednost || (item.rating >= vrednost && item.rating <= vrednost+1);
+  const ratingCondition = (vrednost === 6) || (item.rating >= vrednost && item.rating <= vrednost+1);
                         {/*If selectedAge is an empty string, the condition is immediately true, allowing all items to be displayed.
 If selectedAge is not an empty string, it checks if item.esrb_rating is defined and whether the name property of item.esrb_rating matches the selectedAge. If these conditions are met, the item is displayed.*/}
 const ageCondition = (selectedAge === "") || (item.esrb_rating && item.esrb_rating.name === selectedAge);
 
-  return searchCondition && ratingCondition&&ageCondition;
+  return  ratingCondition&&ageCondition;
 })
             .map((game) => (
               <GameCart id={game.id} background={game.background_image} name={game.name} rating={game.rating} />
