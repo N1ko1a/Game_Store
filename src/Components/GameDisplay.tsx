@@ -3,44 +3,58 @@ import GameCart from "./GameCart";
 import ReactPaginate from "react-paginate";
 import LoadSkeleton from "./LoadSkeleton";
 import MenuButtons from "./MenuButtons";
+import Sort from "./Sort";
 
-function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGenreSearch, selectedRating, selectedAge }) {
+function GameDisplay({
+  searchValue,
+  selectedStore,
+  selectedPlatform,
+  selectedGenreSearch,
+  selectedRating,
+  selectedAge,
+}) {
   const [games, setGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedGenre, setSelectedGenre] = useState("all");
+  const [selectedSort, setSelectedSort] = useState("");
+  const [sign, setSign] = useState("");
   const itemsPerPage = 20;
-    const [vrednost, setVrednost] = useState(6);
+  const [vrednost, setVrednost] = useState(6);
 
   useEffect(() => {
     setIsLoading(true);
     const pageToFetch = currentPage + 1;
-    const genreFilter = selectedGenre === "all" ? "" : `&genres=${selectedGenre}`;
-    const genreFilterSearch = selectedGenreSearch ? `&genres=${selectedGenreSearch}` : "";
+    const genreFilter =
+      selectedGenre === "all" ? "" : `&genres=${selectedGenre}`;
+    const genreFilterSearch = selectedGenreSearch
+      ? `&genres=${selectedGenreSearch}`
+      : "";
     const storeFilter = selectedStore ? `&stores=${selectedStore}` : "";
-    const platformFilter = selectedPlatform ? `&platforms=${selectedPlatform}` : "";
-        switch (selectedRating) {
-            case 1:
-                    setVrednost(1);
-                break;
-            case 2:
-                setVrednost(2);
-                break;
-            case 3:
-                setVrednost(3);
-                break;
-            case 4:
-                setVrednost(4);
-                break;
-            case 5:
-                setVrednost(5);
-                break;
-            default:
-                break;
-        }
-  
+    const platformFilter = selectedPlatform
+      ? `&platforms=${selectedPlatform}`
+      : "";
+    switch (selectedRating) {
+      case 1:
+        setVrednost(1);
+        break;
+      case 2:
+        setVrednost(2);
+        break;
+      case 3:
+        setVrednost(3);
+        break;
+      case 4:
+        setVrednost(4);
+        break;
+      case 5:
+        setVrednost(5);
+        break;
+      default:
+        break;
+    }
 
-    const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}&search=${searchValue}`;
+    const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}&search=${searchValue}&ordering=${sign}${selectedSort.toLowerCase()}`;
 
     fetch(apiURL)
       .then((res) => res.json())
@@ -50,10 +64,22 @@ function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGe
         console.log(data.results);
       })
       .catch((error) => {
-        console.error('Error: ', error);
+        console.error("Error: ", error);
         setIsLoading(false);
       });
-  }, [currentPage, vrednost, selectedGenre, selectedPlatform, selectedGenreSearch, selectedRating, selectedAge, selectedStore, searchValue]);
+  }, [
+    currentPage,
+    vrednost,
+    selectedGenre,
+    selectedPlatform,
+    selectedGenreSearch,
+    selectedRating,
+    selectedAge,
+    selectedStore,
+    searchValue,
+    selectedSort,
+    sign,
+  ]);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
@@ -62,28 +88,53 @@ function GameDisplay({ searchValue, selectedStore,  selectedPlatform, selectedGe
   const handleGenreChange = (genre) => {
     setSelectedGenre(genre);
   };
+  const handleSortingChange = (sort) => {
+    setSelectedSort(sort);
+  };
+  const handleSignChanfe = (sort) => {
+    setSign(sort);
+  };
 
   return (
     <div>
-      <MenuButtons onGenreChange={handleGenreChange}  selectedGenre={selectedGenre}  />
+      <div className="flex justify-between   mr-20">
+        <MenuButtons
+          onGenreChange={handleGenreChange}
+          selectedGenre={selectedGenre}
+        />
+        <Sort
+          onSortingSelect={handleSortingChange}
+          onSignSelect={handleSignChanfe}
+        />
+      </div>
       <div className="grid xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 gap-10 mt-5 mr-20 ml-20 justify-center items-center overflow-hidden">
-        {isLoading ? (
-          Array.from({ length: itemsPerPage }).map((_, index) => (
-            <LoadSkeleton key={index} />
-          ))
-        ) : (
-         games.filter((item) => {
-  const ratingCondition = (vrednost === 6) || (item.rating >= vrednost && item.rating <= vrednost+1);
-                        {/*If selectedAge is an empty string, the condition is immediately true, allowing all items to be displayed.
-If selectedAge is not an empty string, it checks if item.esrb_rating is defined and whether the name property of item.esrb_rating matches the selectedAge. If these conditions are met, the item is displayed.*/}
-const ageCondition = (selectedAge === "") || (item.esrb_rating && item.esrb_rating.name === selectedAge);
-
-  return  ratingCondition&&ageCondition;
-})
-            .map((game) => (
-              <GameCart id={game.id} background={game.background_image} name={game.name} rating={game.rating} />
+        {isLoading
+          ? Array.from({ length: itemsPerPage }).map((_, index) => (
+              <LoadSkeleton key={index} />
             ))
-        )}
+          : games
+              .filter((item) => {
+                const ratingCondition =
+                  vrednost === 6 ||
+                  (item.rating >= vrednost && item.rating <= vrednost + 1);
+                {
+                  /*If selectedAge is an empty string, the condition is immediately true, allowing all items to be displayed.
+If selectedAge is not an empty string, it checks if item.esrb_rating is defined and whether the name property of item.esrb_rating matches the selectedAge. If these conditions are met, the item is displayed.*/
+                }
+                const ageCondition =
+                  selectedAge === "" ||
+                  (item.esrb_rating && item.esrb_rating.name === selectedAge);
+
+                return ratingCondition && ageCondition;
+              })
+              .map((game) => (
+                <GameCart
+                  id={game.id}
+                  background={game.background_image}
+                  name={game.name}
+                  rating={game.rating}
+                />
+              ))}
       </div>
       <div className="flex justify-center items-center">
         <ReactPaginate
@@ -94,7 +145,9 @@ const ageCondition = (selectedAge === "") || (item.esrb_rating && item.esrb_rati
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}
-          containerClassName={"flex flex-row text-white justify-between items-center w-96 h-10 p-2"}
+          containerClassName={
+            "flex flex-row text-white justify-between items-center w-96 h-10 p-2"
+          }
           subContainerClassName={"pages pagination"}
           activeClassName={"active"}
           previousClassName={"hover:text-black ease-in-out duration-300"}
@@ -108,4 +161,3 @@ const ageCondition = (selectedAge === "") || (item.esrb_rating && item.esrb_rati
 }
 
 export default GameDisplay;
-

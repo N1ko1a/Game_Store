@@ -40,18 +40,25 @@ function Home() {
         <TopNav
           onSearchChange={handleSearchChange}
           onPlatformSelect={handleOnPlatformSelect} // Changed the prop name
-                    onGenerSelect={handleOnGenerSelect}
-                    onRatingSelect={handleRatingChange}
-                    onAgeSelect={handleOnAgeSelect}
-                    onStoreSelect={handleOnStoreSelect}
+          onGenerSelect={handleOnGenerSelect}
+          onRatingSelect={handleRatingChange}
+          onAgeSelect={handleOnAgeSelect}
+          onStoreSelect={handleOnStoreSelect}
         />
         <GamePrev />
-                {}
-        <GameDisplay searchValue={searchValue} selectedStore = {selectedStore} selectedAge = {selectedAge} selectedPlatform={selectedPlatform} selectedRating = {selectedRating} selectedGenreSearch = {selectedGener} /> {/* Passed the selected platform */}
+        {}
+        <GameDisplay
+          searchValue={searchValue}
+          selectedStore={selectedStore}
+          selectedAge={selectedAge}
+          selectedPlatform={selectedPlatform}
+          selectedRating={selectedRating}
+          selectedGenreSearch={selectedGener}
+        />{" "}
+        {/* Passed the selected platform */}
       </div>
     </div>
   );
 }
 
 export default Home;
-
