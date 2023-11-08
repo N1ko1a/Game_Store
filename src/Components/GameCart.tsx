@@ -2,7 +2,6 @@ import { AiFillStar } from "react-icons/ai";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Game from "../Routes/Game";
 function GameCart(props) {
   const [imageLoaded, setImageLoaded] = useState(false);
 

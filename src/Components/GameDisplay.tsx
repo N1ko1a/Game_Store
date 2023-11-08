@@ -5,6 +5,14 @@ import LoadSkeleton from "./LoadSkeleton";
 import MenuButtons from "./MenuButtons";
 import Sort from "./Sort";
 
+type GameType = {
+  id: number;
+  name: string;
+  background_image: string;
+  rating: number;
+  esrb_rating: { name: string };
+};
+
 function GameDisplay({
   searchValue,
   selectedStore,
@@ -12,8 +20,15 @@ function GameDisplay({
   selectedGenreSearch,
   selectedRating,
   selectedAge,
+}: {
+  selectedStore: number;
+  searchValue: string;
+  selectedPlatform: number;
+  selectedGenreSearch: number;
+  selectedRating: number;
+  selectedAge: string;
 }) {
-  const [games, setGames] = useState([]);
+  const [games, setGames] = useState<GameType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedGenre, setSelectedGenre] = useState("all");
@@ -81,17 +96,17 @@ function GameDisplay({
     sign,
   ]);
 
-  const handlePageClick = (data) => {
+  const handlePageClick = (data: { selected: number }) => {
     setCurrentPage(data.selected);
   };
 
-  const handleGenreChange = (genre) => {
+  const handleGenreChange = (genre: string) => {
     setSelectedGenre(genre);
   };
-  const handleSortingChange = (sort) => {
+  const handleSortingChange = (sort: string) => {
     setSelectedSort(sort);
   };
-  const handleSignChanfe = (sort) => {
+  const handleSignChanfe = (sort: string) => {
     setSign(sort);
   };
 
@@ -148,7 +163,6 @@ If selectedAge is not an empty string, it checks if item.esrb_rating is defined 
           containerClassName={
             "flex flex-row text-white justify-between items-center w-96 h-10 p-2"
           }
-          subContainerClassName={"pages pagination"}
           activeClassName={"active"}
           previousClassName={"hover:text-black ease-in-out duration-300"}
           nextClassName={"hover:text-black ease-in-out duration-300"}

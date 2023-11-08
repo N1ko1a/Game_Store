@@ -6,30 +6,30 @@ import TopNav from "../Components/TopNav";
 
 function Home() {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedPlatform, setSelectedPlatform] = useState("");
-  const [selectedGener, setSelectedGener] = useState("");
-  const [selectedRating, setSelectedRating] = useState("");
+  const [selectedPlatform, setSelectedPlatform] = useState(0);
+  const [selectedGener, setSelectedGener] = useState(0);
+  const [selectedRating, setSelectedRating] = useState(0);
   const [selectedAge, setSelectedAge] = useState("");
-  const [selectedStore, setSelectedStore] = useState("");
+  const [selectedStore, setSelectedStore] = useState(0);
 
-  const handleOnPlatformSelect = (value) => {
+  const handleOnPlatformSelect = (value: number) => {
     setSelectedPlatform(value);
   };
-  const handleOnStoreSelect = (value) => {
+  const handleOnStoreSelect = (value: number) => {
     setSelectedStore(value);
   };
-  const handleOnAgeSelect = (value) => {
+  const handleOnAgeSelect = (value: string) => {
     setSelectedAge(value);
   };
-  const handleOnGenerSelect = (value) => {
+  const handleOnGenerSelect = (value: number) => {
     setSelectedGener(value);
   };
 
-  const handleSearchChange = (value) => {
+  const handleSearchChange = (value: string) => {
     setSearchValue(value);
   };
 
-  const handleRatingChange = (value) => {
+  const handleRatingChange = (value: number) => {
     setSelectedRating(value);
   };
 

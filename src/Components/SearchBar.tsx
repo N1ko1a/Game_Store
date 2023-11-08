@@ -1,19 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { AiOutlineAlignRight } from "react-icons/ai";
 import SearchBarOptions from "./SearchBarOptions.tsx";
 
 import { motion, AnimatePresence } from "framer-motion";
 
-function SearchBar({ onStoreSelect, onSearchChange, onPlatformSelect, onGenerSelect, onRatingSelect, onAgeSelect }) {
+function SearchBar({
+  onStoreSelect,
+  onSearchChange,
+  onPlatformSelect,
+  onGenerSelect,
+  onRatingSelect,
+  onAgeSelect,
+}: {
+  onStoreSelect: (chose: number) => void;
+  onSearchChange: (searchText: string) => void;
+  onPlatformSelect: (chose: number) => void;
+  onGenerSelect: (chose: number) => void;
+  onRatingSelect: (chose: number) => void;
+  onAgeSelect: (chose: string) => void;
+}) {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchText = event.target.value;
     setSearch(searchText);
     onSearchChange(searchText); // Trigger search as the user types
   };
-
   const toggleSearch = () => {
     setIsOpen(!isOpen);
   };
@@ -47,9 +60,14 @@ function SearchBar({ onStoreSelect, onSearchChange, onPlatformSelect, onGenerSel
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-                        
-         {/*FIlter platforme*/}
-            <SearchBarOptions onPlatformSelect={onPlatformSelect} onStoreSelect={onStoreSelect} onGenerSelect={onGenerSelect} onRatingSelect={onRatingSelect}  onAgeSelect={onAgeSelect}/>
+            {/*FIlter platforme*/}
+            <SearchBarOptions
+              onPlatformSelect={onPlatformSelect}
+              onStoreSelect={onStoreSelect}
+              onGenerSelect={onGenerSelect}
+              onRatingSelect={onRatingSelect}
+              onAgeSelect={onAgeSelect}
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -58,4 +76,3 @@ function SearchBar({ onStoreSelect, onSearchChange, onPlatformSelect, onGenerSel
 }
 
 export default SearchBar;
-
