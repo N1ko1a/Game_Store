@@ -9,8 +9,22 @@ import {
 } from "react-icons/ai";
 import LoadingGame from "./LoadingGame";
 
-function GamePage(props) {
-  const [games, setGames] = useState(null); // Initialize as null
+type GamesPageProp = {
+  id: number;
+};
+type Games = {
+  name: string;
+  background_image: string;
+  description_raw: string;
+  released: string;
+  // This property represents the platforms on which the game is available. It's an array of objects, where each object has a platform property, which in turn has a name property of type string. This allows for listing multiple platforms with their names.
+  platforms: { platform: { name: string } }[];
+  developers: { name: string }[];
+  genres: { name: string }[];
+  publishers: { name: string }[];
+};
+function GamePage(props: GamesPageProp) {
+  const [games, setGames] = useState<Games | null>(null); // Initialize as null
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,6 +35,7 @@ function GamePage(props) {
       .then((data) => {
         setGames(data);
         setIsLoading(false);
+        console.log(data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -59,6 +74,7 @@ function GamePage(props) {
                   <AiOutlineDesktop className="mr-2" />
                   PLATFORMS:{" "}
                   <span className="ml-2 text-sm">
+                    {/*join spaja u jedan string umesto da se printa jedan po jedan element u svakom redu*/}
                     {games.platforms
                       .map((platform) => platform.platform.name)
                       .join(", ")}

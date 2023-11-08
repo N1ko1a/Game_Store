@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 
-function MenuButtons({ onGenreChange, selectedGenre }) {
-  const [genres, setGenres] = useState([]);
+type MenuButtonsProps = {
+  onGenreChange: (genreId: number) => void;
+  //A union type is a way to specify that a variable or parameter can hold values of multiple types
+  selectedGenre: number | string;
+};
+
+type Gener = {
+  name: string;
+  id: number;
+};
+function MenuButtons({ onGenreChange, selectedGenre }: MenuButtonsProps) {
+  const [genres, setGenres] = useState<Gener[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const list = [4, 3, 5, 2, 10, 1, 6, 15];
   useEffect(() => {
@@ -28,7 +38,7 @@ function MenuButtons({ onGenreChange, selectedGenre }) {
         className={`text-white hover:text-black ease-in-out duration-500 h-10 ml-2 mr-2 text-sm ${
           selectedGenre === "all" ? "font-bold" : ""
         }`}
-        onClick={() => onGenreChange("all")}
+        onClick={() => onGenreChange(0)}
       >
         All
       </button>

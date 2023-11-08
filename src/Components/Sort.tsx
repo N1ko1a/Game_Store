@@ -3,15 +3,18 @@ import { useState } from "react";
 import {
   AiOutlineCaretUp,
   AiOutlineCaretDown,
-  AiFillStar,
   AiOutlineArrowUp,
   AiOutlineArrowDown,
 } from "react-icons/ai";
 import { motion, AnimatePresence } from "framer-motion";
 
-function Sort({ onSortingSelect, onSignSelect }) {
+type SortProp = {
+  onSortingSelect: (chose: string) => void;
+  onSignSelect: (chose: string) => void;
+};
+
+function Sort({ onSortingSelect, onSignSelect }: SortProp) {
   const list = ["Name", "Rating", "Released"];
-  const [sorting, setSorting] = useState(0);
   const [isSelected, setIsSelected] = useState(false);
   const [bgColorUp, setBgColorUp] = useState("");
   const [bgColorDown, setBgColorDown] = useState("");
@@ -21,14 +24,14 @@ function Sort({ onSortingSelect, onSignSelect }) {
   const [isBlack, setIsBlack] = useState(false);
 
   const [selectedSorting, setSelectedSorting] = useState(() => {
-    return null;
+    return "";
   });
 
   const toggleSortingClick = () => {
     setSortingClick(!sortingClik);
   };
 
-  const handleSortingClick = (chose) => {
+  const handleSortingClick = (chose: string) => {
     setSelectedSorting(chose);
     onSortingSelect(chose);
     setSortingClick(false);
@@ -73,7 +76,7 @@ function Sort({ onSortingSelect, onSignSelect }) {
                   key={itemg}
                   onClick={() => {
                     handleSortingClick(itemg);
-                    sendSorting(itemg);
+                    sendSorting();
                   }}
                 >
                   <p className="cursor-pointer hover:text-black duration-300 text-l font-medium">

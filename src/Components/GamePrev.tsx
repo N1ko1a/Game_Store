@@ -3,11 +3,17 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import LoadingPrev from "./LoadingPrev";
 
+type Game = {
+  id: number;
+  background_image: string;
+  name: string;
+};
 function GamePrev() {
-  const [games, setGames] = useState([]);
+  const [games, setGames] = useState<Game[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [width, setWidth] = useState(0);
-  const ref = useRef(null);
+  // Since we working with React, we can use useRef with a specific type. In our case, we  want to use a ref for an HTML element, so we should define the type as HTMLDivElement:
+  const ref = useRef<HTMLDivElement | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
@@ -24,9 +30,9 @@ function GamePrev() {
         setIsLoading(false);
       });
   }, []);
-
+  // Adding ! asserts to TypeScript that you're confident ref.current is not null.
   useEffect(() => {
-    setWidth(ref.current.scrollWidth - ref.current.offsetWidth);
+    setWidth(ref.current!.scrollWidth - ref.current!.offsetWidth);
   }, []);
 
   const handleImageLoad = () => {
@@ -34,7 +40,8 @@ function GamePrev() {
   };
 
   const navigate = useNavigate();
-  const navigateToGame = (game) => {
+  const navigateToGame = (game: Game) => {
+    console.log(typeof game);
     navigate("Game", { state: { id: game.id } });
   };
 
@@ -49,9 +56,9 @@ function GamePrev() {
           ? Array.from({ length: 10 }).map((_, index) => (
               <LoadingPrev key={index} />
             ))
-          : games.map((game) => (
+          : games.map((game: Game) => (
               <motion.div
-                id={game.id}
+                key={game.id}
                 className={`min-w-custom h-96 flex items-end  rounded-3xl m-5 `}
                 style={{
                   backgroundImage: `url(${game.background_image})`,
