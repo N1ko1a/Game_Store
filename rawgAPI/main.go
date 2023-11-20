@@ -93,7 +93,7 @@ func GetJson(client *http.Client, url string, target interface{}) error {
 }
 
 // preuzimanje igrica
-func GetGames(c *gin.Context) {
+func GetGamesDirect() error {
 	totalPages := 500
 	itemsPerPage := 20
 	baseURL := fmt.Sprintf("https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=%d&page_size=%d&ordering=-popularity", totalPages, itemsPerPage)
@@ -111,8 +111,7 @@ func GetGames(c *gin.Context) {
 
 		err := GetJson(client, url, &gamesResponse) //obavlja se get zahtev
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
+			return fmt.Errorf("error getting games: %s", err.Error())
 		}
 
 		// Print the games and update the counter
@@ -136,20 +135,18 @@ func GetGames(c *gin.Context) {
 			// Insert data into MongoDB
 			err := InsertIntoMongoDB(game)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-				return
+				return fmt.Errorf("error inserting data into MongoDB: %s", err.Error())
 			}
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Games inserted into MongoDB"})
+	fmt.Println("Games inserted into MongoDB")
+	return nil
 }
-
 func main() {
 	router := gin.Default()
-	router.GET("/getGames", GetGames) //endpoint za ubacivanje igrica u bazu podataka
 
-	//Povezivanje sa bazom podataka
+	// Povezivanje sa bazom podataka
 	ctx := context.TODO()
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
@@ -165,6 +162,12 @@ func main() {
 			fmt.Printf("error disconnecting from MongoDB: %s\n", err.Error())
 		}
 	}()
+
+	// Call GetGames function to insert data into MongoDB
+	if err := GetGamesDirect(); err != nil {
+		fmt.Printf("error running GetGames: %s\n", err.Error())
+		return
+	}
 
 	router.Run(":8080")
 }
