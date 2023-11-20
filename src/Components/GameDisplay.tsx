@@ -34,6 +34,8 @@ function GameDisplay({
   const [selectedGenre, setSelectedGenre] = useState("all");
   const [selectedSort, setSelectedSort] = useState("");
   const [sign, setSign] = useState("");
+  const [allGames, setAllGames] = useState([]);
+  const maxPage = 50;
   const itemsPerPage = 20;
   const [vrednost, setVrednost] = useState(6);
 
@@ -82,6 +84,25 @@ function GameDisplay({
         console.error("Error: ", error);
         setIsLoading(false);
       });
+    const fetchAllData = async () => {
+      const allGamesData = [];
+      for (let page = 1; page <= 20; page++) {
+        const apiURLAll = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${page}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}&search=${searchValue}&ordering=${sign}${selectedSort.toLowerCase()}`;
+
+        try {
+          const response = await fetch(apiURLAll);
+          const data = await response.json();
+          allGamesData.push(...data.results);
+        } catch (error) {
+          console.error("Error: ", error);
+          setIsLoading(false);
+        }
+      }
+      setAllGames(allGamesData);
+      setIsLoading(false);
+      console.log("All Games: ", allGamesData);
+    };
+    fetchAllData();
   }, [
     currentPage,
     vrednost,
