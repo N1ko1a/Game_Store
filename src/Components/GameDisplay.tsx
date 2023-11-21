@@ -47,9 +47,7 @@ function GameDisplay({
       ? `&genres=${selectedGenreSearch}`
       : "";
     const storeFilter = selectedStore ? `&stores=${selectedStore}` : "";
-    const platformFilter = selectedPlatform
-      ? `&platforms=${selectedPlatform}`
-      : "";
+    const platformFilter = selectedPlatform ? selectedPlatform : "";
     switch (selectedRating) {
       case 1:
         setVrednost(1);
@@ -71,7 +69,7 @@ function GameDisplay({
     }
 
     // const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}&search=${searchValue}&ordering=${sign}${selectedSort.toLowerCase()}`;
-    const apiURL = `http://localhost:8080/games?page=${pageToFetch}&pageSize=${itemsPerPage}&search=${searchValue}`;
+    const apiURL = `http://localhost:8080/games?page=${pageToFetch}&pageSize=${itemsPerPage}&search=${searchValue}&platform=${platformFilter}`;
 
     fetch(apiURL)
       .then((res) => res.json())

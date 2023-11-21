@@ -207,14 +207,22 @@ func GetPaginatedGames(c *gin.Context) {
 	}
 
 	searchQuery := c.Query("search")
+	platformQuery := c.Query("platform")
 	fmt.Println("Search Query:", searchQuery)
+	fmt.Println("platformQuery: ", platformQuery)
 
 	// Build the filter based on pagination and search criteria
 	filter := bson.M{}
 	if searchQuery != "" {
 		filter["name"] = bson.M{"$regex": searchQuery, "$options": "i"}
 	}
-
+	if platformQuery != "" {
+		platformID, err := strconv.Atoi(platformQuery)
+		if err != nil {
+			// Handle error
+		}
+		filter["platforms.platform.id"] = platformID
+	}
 	// Calculate offset and limit for the database query
 	offset := (page - 1) * pageSize
 	limit := pageSize
