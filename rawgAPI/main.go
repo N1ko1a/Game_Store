@@ -68,7 +68,7 @@ func InsertIntoMongoDB(game Game) error {
 		return fmt.Errorf("error checking if collection is empty: %s", err.Error())
 	}
 
-	if count > 0 {
+	if count >= 10000 {
 		// Collection is not empty, skip insertion
 		fmt.Println("Skipping insertion as the collection is not empty.")
 		return nil
@@ -111,11 +111,20 @@ func GetGamesDirect() error {
 	itemsPerPage := 20
 	baseURL := fmt.Sprintf("https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=%d&page_size=%d&ordering=-popularity", totalPages, itemsPerPage)
 
-	// Initialize a counter
-	counter := 0
-
 	// Create a new HTTP client for making API requests
 	client := &http.Client{}
+
+	// Check if the collection has less than 10,000 games
+	if isCollectionUnderLimit, err := isCollectionUnderLimit(10000); err != nil {
+		return err
+	} else if !isCollectionUnderLimit {
+		// Collection already has 10,000 or more games, skip fetching and printing games
+		fmt.Println("Skipping fetching games as the collection already has 10,000 or more games.")
+		return nil
+	}
+
+	// Initialize a counter
+	counter := 0
 
 	for page := 1; page <= totalPages; page++ {
 		url := fmt.Sprintf("%s&page=%d", baseURL, page)
@@ -132,37 +141,29 @@ func GetGamesDirect() error {
 			counter++
 			totalGames++
 
-			// Check if the game is already in the database
-			exists, err := gameExistsInDatabase(game.Id)
+			fmt.Printf("Game %d - Name: %s, Id: %d, Background_image: %s, Rating: %f\n", counter, game.Name, game.Id, game.BackgroundImage, game.Rating)
+
+			// Check if AgeRating is null or not
+			if game.AgeRating != nil {
+				fmt.Printf("Age Rating: ID %d, Name: %s\n", game.AgeRating.Id, game.AgeRating.Name)
+			} else {
+				fmt.Println("Age Rating is null")
+			}
+
+			// Iterate through the slice of platform wrappers and print each platform's information
+			for _, platformWrapper := range game.GamePlatforms {
+				platform := platformWrapper.Platform
+				fmt.Printf("Platform: ID %d, Name: %s\n", platform.Id, platform.Name)
+			}
+
+			// Insert data into MongoDB
+			err := InsertIntoMongoDB(game)
 			if err != nil {
-				return fmt.Errorf("error checking if game exists in database: %s", err.Error())
+				return fmt.Errorf("error inserting data into MongoDB: %s", err.Error())
 			}
 
-			if !exists {
-				fmt.Printf("Game %d - Name: %s, Id: %d, Background_image: %s, Rating: %f\n", counter, game.Name, game.Id, game.BackgroundImage, game.Rating)
-
-				// Check if AgeRating is null or not
-				if game.AgeRating != nil {
-					fmt.Printf("Age Rating: ID %d, Name: %s\n", game.AgeRating.Id, game.AgeRating.Name)
-				} else {
-					fmt.Println("Age Rating is null")
-				}
-
-				// Iterate through the slice of platform wrappers and print each platform's information
-				for _, platformWrapper := range game.GamePlatforms {
-					platform := platformWrapper.Platform
-					fmt.Printf("Platform: ID %d, Name: %s\n", platform.Id, platform.Name)
-				}
-
-				// Insert data into MongoDB
-				err := InsertIntoMongoDB(game)
-				if err != nil {
-					return fmt.Errorf("error inserting data into MongoDB: %s", err.Error())
-				}
-
-				// Print the game inserted message
-				fmt.Printf("Game inserted into MongoDB - Total Games: %d\n", totalGames)
-			}
+			// Print the game inserted message
+			fmt.Printf("Game inserted into MongoDB - Total Games: %d\n", totalGames)
 		}
 	}
 
@@ -170,25 +171,18 @@ func GetGamesDirect() error {
 	return nil
 }
 
-// Check if the game with the specified ID already exists in the database
-func gameExistsInDatabase(gameID int) (bool, error) {
+// Check if the collection has less than the specified limit of games
+func isCollectionUnderLimit(limit int64) (bool, error) {
 	ctx := context.TODO()
 	quickstartDatabase := mongoClient.Database("GameStore")
 	gamesCollection := quickstartDatabase.Collection("Games")
 
-	filter := bson.D{{Key: "id", Value: gameID}}
-	existingDoc := gamesCollection.FindOne(ctx, filter)
-
-	if existingDoc.Err() == nil {
-		// Document with the same ID already exists
-		return true, nil
-	} else if existingDoc.Err() == mongo.ErrNoDocuments {
-		// Document with the same ID does not exist
-		return false, nil
-	} else {
-		// An error occurred while checking for existing documents
-		return false, existingDoc.Err()
+	count, err := gamesCollection.CountDocuments(ctx, bson.D{})
+	if err != nil {
+		return false, fmt.Errorf("error checking if collection is under limit: %s", err.Error())
 	}
+
+	return count < limit, nil
 }
 
 // Get all games
@@ -253,3 +247,4 @@ func main() {
 	router.GET("/games", GetAllGames)
 	router.Run(":8080")
 }
+
