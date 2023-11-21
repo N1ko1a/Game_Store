@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
+	"strconv"
 )
 
 // Struktura podataka
@@ -185,16 +186,31 @@ func isCollectionUnderLimit(limit int64) (bool, error) {
 	return count < limit, nil
 }
 
-// Get all games
-func GetAllGames(c *gin.Context) {
+// GetPaginatedGames retrieves paginated games based on page and pageSize query parameters.
+func GetPaginatedGames(c *gin.Context) {
 	ctx := context.TODO()
 	quickstartDatabase := mongoClient.Database("GameStore")
 	gamesCollection := quickstartDatabase.Collection("Games")
 
-	// Query all games from the collection
-	cursor, err := gamesCollection.Find(ctx, bson.D{})
+	// Parse query parameters for pagination
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+	if err != nil || pageSize < 1 {
+		pageSize = 10 // Default page size
+	}
+
+	// Calculate offset and limit for the database query
+	offset := (page - 1) * pageSize
+	limit := pageSize
+
+	// Query games from the collection with pagination
+	cursor, err := gamesCollection.Find(ctx, bson.D{}, options.Find().SetSkip(int64(offset)).SetLimit(int64(limit)))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying games from the database"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying paginated games from the database"})
 		return
 	}
 	defer cursor.Close(ctx)
@@ -212,11 +228,11 @@ func GetAllGames(c *gin.Context) {
 
 	// Check for any errors during cursor iteration
 	if err := cursor.Err(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error iterating over games"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error iterating over paginated games"})
 		return
 	}
 
-	// Return the list of games as JSON response
+	// Return the list of paginated games as JSON response
 	c.JSON(http.StatusOK, gin.H{"games": games})
 }
 func main() {
@@ -244,7 +260,8 @@ func main() {
 		fmt.Printf("error running GetGames: %s\n", err.Error())
 		return
 	}
-	router.GET("/games", GetAllGames)
+	// Replace the existing GetAllGames route with the new GetPaginatedGames route
+	router.GET("/games", GetPaginatedGames)
 	router.Run(":8080")
 }
 
