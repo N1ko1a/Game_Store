@@ -49,21 +49,33 @@ func InsertIntoMongoDB(game Game) error {
 	quickstartDatabase := mongoClient.Database("GameStore")      //Ovo je baza
 	podcastsCollection := quickstartDatabase.Collection("Games") //Ovo je colekcija
 
-	//Proverava da li postoji vec igirca sa id u nasoj bazi
-	filter := bson.D{{Key: "id", Value: game.Id}}
-	existingDoc := podcastsCollection.FindOne(ctx, filter)
+	// //Proverava da li postoji vec igirca sa id u nasoj bazi
+	// filter := bson.D{{Key: "id", Value: game.Id}}
+	// existingDoc := podcastsCollection.FindOne(ctx, filter)
+	//
+	// if existingDoc.Err() == nil {
+	// 	// Document with the same ID already exists, skip insertion
+	// 	fmt.Printf("Skipping insertion for game %d - Name: %s (ID: %d) as it already exists.\n", game.Id, game.Name, game.Id)
+	// 	return nil
+	// } else if existingDoc.Err() != mongo.ErrNoDocuments {
+	// 	// An error occurred while checking for existing documents
+	// 	return existingDoc.Err()
+	// }
 
-	if existingDoc.Err() == nil {
-		// Document with the same ID already exists, skip insertion
-		fmt.Printf("Skipping insertion for game %d - Name: %s (ID: %d) as it already exists.\n", game.Id, game.Name, game.Id)
-		return nil
-	} else if existingDoc.Err() != mongo.ErrNoDocuments {
-		// An error occurred while checking for existing documents
-		return existingDoc.Err()
+	// Check if the collection is empty
+	count, err := podcastsCollection.CountDocuments(ctx, bson.D{})
+	if err != nil {
+		return fmt.Errorf("error checking if collection is empty: %s", err.Error())
 	}
 
-	// Document with the same ID does not exist, proceed with insertion
-	_, err := podcastsCollection.InsertOne(ctx, bson.D{
+	if count > 0 {
+		// Collection is not empty, skip insertion
+		fmt.Println("Skipping insertion as the collection is not empty.")
+		return nil
+	}
+
+	// Collection is empty, proceed with insertion
+	_, err = podcastsCollection.InsertOne(ctx, bson.D{
 		{Key: "id", Value: game.Id},
 		{Key: "name", Value: game.Name},
 		{Key: "background_image", Value: game.BackgroundImage},
@@ -71,8 +83,8 @@ func InsertIntoMongoDB(game Game) error {
 		{Key: "esrb_rating", Value: game.AgeRating},
 		{Key: "platforms", Value: game.GamePlatforms},
 	})
-
 	return err
+
 }
 
 // preuzimanje JSON podataka sa udaljenog servera putem HTTP GET zahteva,a zatim dekodiranje tih podataka u strukturu ili vrednost koja je prosleđena kao target argument.
@@ -94,6 +106,7 @@ func GetJson(client *http.Client, url string, target interface{}) error {
 
 // preuzimanje igrica
 func GetGamesDirect() error {
+	totalGames := 0
 	totalPages := 500
 	itemsPerPage := 20
 	baseURL := fmt.Sprintf("https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=%d&page_size=%d&ordering=-popularity", totalPages, itemsPerPage)
@@ -105,11 +118,11 @@ func GetGamesDirect() error {
 	client := &http.Client{}
 
 	for page := 1; page <= totalPages; page++ {
-		url := fmt.Sprintf("%s&page=%d", baseURL, page) //ovo ne printuje nego suprotno returnuje (kreira se url za trenutnu stranicu)
+		url := fmt.Sprintf("%s&page=%d", baseURL, page)
 
 		var gamesResponse *GamesResponse
 
-		err := GetJson(client, url, &gamesResponse) //obavlja se get zahtev
+		err := GetJson(client, url, &gamesResponse)
 		if err != nil {
 			return fmt.Errorf("error getting games: %s", err.Error())
 		}
@@ -117,31 +130,100 @@ func GetGamesDirect() error {
 		// Print the games and update the counter
 		for _, game := range gamesResponse.Results {
 			counter++
-			fmt.Printf("Game %d - Name: %s, Id: %d, Background_image: %s, Rating: %f\n", counter, game.Name, game.Id, game.BackgroundImage, game.Rating)
+			totalGames++
 
-			// Check if AgeRating is null or not
-			if game.AgeRating != nil {
-				fmt.Printf("Age Rating: ID %d, Name: %s\n", game.AgeRating.Id, game.AgeRating.Name)
-			} else {
-				fmt.Println("Age Rating is null")
-			}
-
-			// Iterate through the slice of platform wrappers and print each platform's information
-			for _, platformWrapper := range game.GamePlatforms {
-				platform := platformWrapper.Platform
-				fmt.Printf("Platform: ID %d, Name: %s\n", platform.Id, platform.Name)
-			}
-
-			// Insert data into MongoDB
-			err := InsertIntoMongoDB(game)
+			// Check if the game is already in the database
+			exists, err := gameExistsInDatabase(game.Id)
 			if err != nil {
-				return fmt.Errorf("error inserting data into MongoDB: %s", err.Error())
+				return fmt.Errorf("error checking if game exists in database: %s", err.Error())
+			}
+
+			if !exists {
+				fmt.Printf("Game %d - Name: %s, Id: %d, Background_image: %s, Rating: %f\n", counter, game.Name, game.Id, game.BackgroundImage, game.Rating)
+
+				// Check if AgeRating is null or not
+				if game.AgeRating != nil {
+					fmt.Printf("Age Rating: ID %d, Name: %s\n", game.AgeRating.Id, game.AgeRating.Name)
+				} else {
+					fmt.Println("Age Rating is null")
+				}
+
+				// Iterate through the slice of platform wrappers and print each platform's information
+				for _, platformWrapper := range game.GamePlatforms {
+					platform := platformWrapper.Platform
+					fmt.Printf("Platform: ID %d, Name: %s\n", platform.Id, platform.Name)
+				}
+
+				// Insert data into MongoDB
+				err := InsertIntoMongoDB(game)
+				if err != nil {
+					return fmt.Errorf("error inserting data into MongoDB: %s", err.Error())
+				}
+
+				// Print the game inserted message
+				fmt.Printf("Game inserted into MongoDB - Total Games: %d\n", totalGames)
 			}
 		}
 	}
 
-	fmt.Println("Games inserted into MongoDB")
+	fmt.Println("All Games inserted into MongoDB")
 	return nil
+}
+
+// Check if the game with the specified ID already exists in the database
+func gameExistsInDatabase(gameID int) (bool, error) {
+	ctx := context.TODO()
+	quickstartDatabase := mongoClient.Database("GameStore")
+	gamesCollection := quickstartDatabase.Collection("Games")
+
+	filter := bson.D{{Key: "id", Value: gameID}}
+	existingDoc := gamesCollection.FindOne(ctx, filter)
+
+	if existingDoc.Err() == nil {
+		// Document with the same ID already exists
+		return true, nil
+	} else if existingDoc.Err() == mongo.ErrNoDocuments {
+		// Document with the same ID does not exist
+		return false, nil
+	} else {
+		// An error occurred while checking for existing documents
+		return false, existingDoc.Err()
+	}
+}
+
+// Get all games
+func GetAllGames(c *gin.Context) {
+	ctx := context.TODO()
+	quickstartDatabase := mongoClient.Database("GameStore")
+	gamesCollection := quickstartDatabase.Collection("Games")
+
+	// Query all games from the collection
+	cursor, err := gamesCollection.Find(ctx, bson.D{})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying games from the database"})
+		return
+	}
+	defer cursor.Close(ctx)
+
+	// Iterate through the cursor and store games in a slice
+	var games []Game
+	for cursor.Next(ctx) {
+		var game Game
+		if err := cursor.Decode(&game); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error decoding game data"})
+			return
+		}
+		games = append(games, game)
+	}
+
+	// Check for any errors during cursor iteration
+	if err := cursor.Err(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error iterating over games"})
+		return
+	}
+
+	// Return the list of games as JSON response
+	c.JSON(http.StatusOK, gin.H{"games": games})
 }
 func main() {
 	router := gin.Default()
@@ -168,6 +250,6 @@ func main() {
 		fmt.Printf("error running GetGames: %s\n", err.Error())
 		return
 	}
-
+	router.GET("/games", GetAllGames)
 	router.Run(":8080")
 }
