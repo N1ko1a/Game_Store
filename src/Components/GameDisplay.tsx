@@ -34,7 +34,6 @@ function GameDisplay({
   const [selectedGenre, setSelectedGenre] = useState("all");
   const [selectedSort, setSelectedSort] = useState("");
   const [sign, setSign] = useState("");
-  const [allGames, setAllGames] = useState([]);
   const maxPage = 50;
   const itemsPerPage = 20;
   const [vrednost, setVrednost] = useState(6);
@@ -71,38 +70,21 @@ function GameDisplay({
         break;
     }
 
-    const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}&search=${searchValue}&ordering=${sign}${selectedSort.toLowerCase()}`;
+    // const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}&search=${searchValue}&ordering=${sign}${selectedSort.toLowerCase()}`;
+    const apiURL = `http://localhost:8080/games?page=${pageToFetch}&pageSize=${itemsPerPage}&search=${searchValue}`;
 
     fetch(apiURL)
       .then((res) => res.json())
       .then((data) => {
-        setGames(data.results);
+        const gameResults = data.games || []; // default to an empty array if results is undefined
+        setGames(gameResults);
         setIsLoading(false);
-        console.log(data.results);
+        console.log("Podaci:", gameResults);
       })
       .catch((error) => {
         console.error("Error: ", error);
         setIsLoading(false);
       });
-    const fetchAllData = async () => {
-      const allGamesData = [];
-      for (let page = 1; page <= 20; page++) {
-        const apiURLAll = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${page}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}&search=${searchValue}&ordering=${sign}${selectedSort.toLowerCase()}`;
-
-        try {
-          const response = await fetch(apiURLAll);
-          const data = await response.json();
-          allGamesData.push(...data.results);
-        } catch (error) {
-          console.error("Error: ", error);
-          setIsLoading(false);
-        }
-      }
-      setAllGames(allGamesData);
-      setIsLoading(false);
-      console.log("All Games: ", allGamesData);
-    };
-    fetchAllData();
   }, [
     currentPage,
     vrednost,
@@ -149,20 +131,20 @@ function GameDisplay({
               <LoadSkeleton key={index} />
             ))
           : games
-              .filter((item) => {
-                const ratingCondition =
-                  vrednost === 6 ||
-                  (item.rating >= vrednost && item.rating <= vrednost + 1);
-                {
-                  /*If selectedAge is an empty string, the condition is immediately true, allowing all items to be displayed.
-If selectedAge is not an empty string, it checks if item.esrb_rating is defined and whether the name property of item.esrb_rating matches the selectedAge. If these conditions are met, the item is displayed.*/
-                }
-                const ageCondition =
-                  selectedAge === "" ||
-                  (item.esrb_rating && item.esrb_rating.name === selectedAge);
-
-                return ratingCondition && ageCondition;
-              })
+              //               .filter((item) => {
+              //                 const ratingCondition =
+              //                   vrednost === 6 ||
+              //                   (item.rating >= vrednost && item.rating <= vrednost + 1);
+              //                 {
+              //                   /*If selectedAge is an empty string, the condition is immediately true, allowing all items to be displayed.
+              // If selectedAge is not an empty string, it checks if item.esrb_rating is defined and whether the name property of item.esrb_rating matches the selectedAge. If these conditions are met, the item is displayed.*/
+              //                 }
+              //                 const ageCondition =
+              //                   selectedAge === "" ||
+              //                   (item.esrb_rating && item.esrb_rating.name === selectedAge);
+              //
+              //                 return ratingCondition && ageCondition;
+              //               })
               .map((game) => (
                 <GameCart
                   id={game.id}

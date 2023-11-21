@@ -4,10 +4,13 @@ import (
 	"context"
 	"encoding/json" // Add this import statement
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	// "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -186,13 +189,13 @@ func isCollectionUnderLimit(limit int64) (bool, error) {
 	return count < limit, nil
 }
 
-// GetPaginatedGames retrieves paginated games based on page and pageSize query parameters.
+// GetPaginatedGames retrieves paginated games based on page, pageSize, and optional search query parameters.
 func GetPaginatedGames(c *gin.Context) {
 	ctx := context.TODO()
 	quickstartDatabase := mongoClient.Database("GameStore")
 	gamesCollection := quickstartDatabase.Collection("Games")
 
-	// Parse query parameters for pagination
+	// Parse query parameters for pagination and search
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil || page < 1 {
 		page = 1
@@ -203,12 +206,21 @@ func GetPaginatedGames(c *gin.Context) {
 		pageSize = 10 // Default page size
 	}
 
+	searchQuery := c.Query("search")
+	fmt.Println("Search Query:", searchQuery)
+
+	// Build the filter based on pagination and search criteria
+	filter := bson.M{}
+	if searchQuery != "" {
+		filter["name"] = bson.M{"$regex": searchQuery, "$options": "i"}
+	}
+
 	// Calculate offset and limit for the database query
 	offset := (page - 1) * pageSize
 	limit := pageSize
 
-	// Query games from the collection with pagination
-	cursor, err := gamesCollection.Find(ctx, bson.D{}, options.Find().SetSkip(int64(offset)).SetLimit(int64(limit)))
+	// Query games from the collection with pagination and search filter
+	cursor, err := gamesCollection.Find(ctx, filter, options.Find().SetSkip(int64(offset)).SetLimit(int64(limit)))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying paginated games from the database"})
 		return
@@ -216,14 +228,9 @@ func GetPaginatedGames(c *gin.Context) {
 	defer cursor.Close(ctx)
 
 	// Iterate through the cursor and store games in a slice
-	var games []Game
-	for cursor.Next(ctx) {
-		var game Game
-		if err := cursor.Decode(&game); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error decoding game data"})
-			return
-		}
-		games = append(games, game)
+	var games []bson.M
+	if err = cursor.All(ctx, &games); err != nil {
+		log.Fatal(err)
 	}
 
 	// Check for any errors during cursor iteration
@@ -237,7 +244,10 @@ func GetPaginatedGames(c *gin.Context) {
 }
 func main() {
 	router := gin.Default()
-
+	// Configure CORS middlewar
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:5173"} // Add your frontend's origin
+	router.Use(cors.New(config))
 	// Povezivanje sa bazom podataka
 	ctx := context.TODO()
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
@@ -264,4 +274,3 @@ func main() {
 	router.GET("/games", GetPaginatedGames)
 	router.Run(":8080")
 }
-
