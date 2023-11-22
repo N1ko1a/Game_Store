@@ -225,7 +225,9 @@ func GetPaginatedGames(c *gin.Context) {
 	platformQuery := c.Query("platform")
 	storeQuery := c.Query("store")
 	genreQuery := c.Query("genre")
-	fmt.Println("Genre: ", genreQuery)
+	ratingQuery := c.Query("rating")
+	ageQuery := c.Query("age")
+	fmt.Println("Age: ", ageQuery)
 	// Build the filter based on pagination and search criteria
 	filter := bson.M{}
 	if searchQuery != "" {
@@ -252,6 +254,22 @@ func GetPaginatedGames(c *gin.Context) {
 		}
 		filter["genres.id"] = genreID
 	}
+	if ratingQuery != "" {
+		ratingID, err := strconv.Atoi(ratingQuery)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying rating filter"})
+		}
+
+		// Set up a rating range in the filter
+		filter["rating"] = bson.M{"$gte": ratingID, "$lt": ratingID + 1}
+	}
+	if ageQuery != "" {
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying AgeRating filter"})
+		}
+		filter["esrb_rating.name"] = bson.M{"$regex": ageQuery}
+	}
+
 	// Calculate offset and limit for the database query
 	offset := (page - 1) * pageSize
 	limit := pageSize
