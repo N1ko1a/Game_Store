@@ -36,7 +36,7 @@ function MenuButtons({ onGenreChange, selectedGenre }: MenuButtonsProps) {
     <div className="flex justify-start ml-20 mt-10">
       <button
         className={`text-white hover:text-black ease-in-out duration-500 h-10 ml-2 mr-2 text-sm ${
-          selectedGenre === "all" ? "font-bold" : ""
+          selectedGenre === 0 ? "font-bold text-xl" : "text-base"
         }`}
         onClick={() => onGenreChange(0)}
       >
@@ -48,8 +48,8 @@ function MenuButtons({ onGenreChange, selectedGenre }: MenuButtonsProps) {
           return (
             <button
               key={genre.id}
-              className={`text-white hover:text-black ease-in-out duration-500 h-10 ml-2 mr-2 text-sm ${
-                selectedGenre === genre.id ? "font-bold" : ""
+              className={`text-white hover:text-black ease-in-out duration-500 h-10 ml-2 mr-2  ${
+                selectedGenre === genre.id ? "font-bold text-xl " : "text-base"
               }`}
               onClick={() => onGenreChange(genre.id)}
             >

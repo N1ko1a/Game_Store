@@ -4,7 +4,6 @@ import ReactPaginate from "react-paginate";
 import LoadSkeleton from "./LoadSkeleton";
 import MenuButtons from "./MenuButtons";
 import Sort from "./Sort";
-
 type GameType = {
   id: number;
   name: string;
@@ -31,7 +30,7 @@ function GameDisplay({
   const [games, setGames] = useState<GameType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const [selectedGenre, setSelectedGenre] = useState("all");
+  const [selectedGenre, setSelectedGenre] = useState(0);
   const [selectedSort, setSelectedSort] = useState("");
   const [sign, setSign] = useState("");
   const maxPage = 50;
@@ -41,8 +40,7 @@ function GameDisplay({
   useEffect(() => {
     setIsLoading(true);
     const pageToFetch = currentPage + 1;
-    const genreFilter =
-      selectedGenre === "all" ? "" : `&genres=${selectedGenre}`;
+    const genreFilter = selectedGenre === 0 ? "" : selectedGenre;
     const genreFilterSearch = selectedGenreSearch ? selectedGenreSearch : "";
     const storeFilter = selectedStore ? selectedStore : "";
     const platformFilter = selectedPlatform ? selectedPlatform : "";
@@ -57,6 +55,7 @@ function GameDisplay({
         case 3:
           setVrednost(3);
           break;
+
         case 4:
           setVrednost(4);
           break;
@@ -69,7 +68,9 @@ function GameDisplay({
     }
     const ratingFilter = selectedRating ? selectedRating : "";
     // const apiURL = `https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page=${pageToFetch}&page_size=${itemsPerPage}&ordering=-popularity${genreFilter}${platformFilter}${genreFilterSearch}${storeFilter}&search=${searchValue}&ordering=${sign}${selectedSort.toLowerCase()}`;
-    const apiURL = `http://localhost:8080/games?page=${pageToFetch}&pageSize=${itemsPerPage}&search=${searchValue}&platform=${platformFilter}&store=${storeFilter}&genre=${genreFilterSearch}&rating=${ratingFilter}&age=${selectedAge}`;
+    const apiURL = `http://localhost:8080/games?page=${pageToFetch}&pageSize=${itemsPerPage}&search=${searchValue}&platform=${platformFilter}&store=${storeFilter}&genre=${
+      genreFilterSearch || genreFilter
+    }&rating=${ratingFilter}&age=${selectedAge}&sort=${selectedSort}&sign=${sign}`;
 
     fetch(apiURL)
       .then((res) => res.json())

@@ -7,6 +7,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"strings"
 	// "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -21,6 +22,7 @@ type Game struct {
 	Name            string            `json:"name"`
 	BackgroundImage string            `json:"background_image"`
 	Rating          float64           `json:"rating"`
+	Released        string            `json:"released"`
 	AgeRating       *EsrbRating       `json:"esrb_rating"` //Pointer na struct
 	GamePlatforms   []PlatformWrapper `json:"platforms"`   //niz structa
 	Stores          []StoreWrapper    `json:"stores"`
@@ -101,6 +103,7 @@ func InsertIntoMongoDB(game Game) error {
 		{Key: "platforms", Value: game.GamePlatforms},
 		{Key: "stores", Value: game.Stores},
 		{Key: "genres", Value: game.Genres},
+		{Key: "released", Value: game.Released},
 	})
 	return err
 
@@ -269,13 +272,36 @@ func GetPaginatedGames(c *gin.Context) {
 		}
 		filter["esrb_rating.name"] = bson.M{"$regex": ageQuery}
 	}
+	// Create a sorting option based on the query parameters
+	sortOptions := bson.D{}
 
+	sortQuery := c.Query("sort")
+	signQuery := c.Query("sign")
+	fmt.Println("Znak: ", signQuery)
+	// Sort by name if requested
+	if sortQuery != "" {
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error sorting name filter"})
+		}
+		if signQuery == "1" {
+			sortOptions = append(sortOptions, bson.E{Key: strings.ToLower(sortQuery), Value: 1})
+		} else {
+			sortOptions = append(sortOptions, bson.E{Key: strings.ToLower(sortQuery), Value: -1})
+		}
+	}
+
+	// // Sort by rating if requested
+	// if c.Query("sortByRating") == "asc" {
+	//     sortOptions = append(sortOptions, bson.E{Key: "rating", Value: 1})
+	// } else if c.Query("sortByRating") == "desc" {
+	//     sortOptions = append(sortOptions, bson.E{Key: "rating", Value: -1})
+	// }
 	// Calculate offset and limit for the database query
 	offset := (page - 1) * pageSize
 	limit := pageSize
 
 	// Query games from the collection with pagination and search filter
-	cursor, err := gamesCollection.Find(ctx, filter, options.Find().SetSkip(int64(offset)).SetLimit(int64(limit)))
+	cursor, err := gamesCollection.Find(ctx, filter, options.Find().SetSkip(int64(offset)).SetLimit(int64(limit)).SetSort(sortOptions))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying paginated games from the database"})
 		return

@@ -38,7 +38,7 @@ function Sort({ onSortingSelect, onSignSelect }: SortProp) {
   };
   const sendSorting = () => {
     setIsSelected(!isSelected);
-    isSelected ? onSignSelect("-") : onSignSelect("");
+    isSelected ? onSignSelect("1") : onSignSelect("2");
   };
   const toggleColor = () => {
     setIsBlack(!isBlack);
@@ -96,7 +96,7 @@ function Sort({ onSortingSelect, onSignSelect }: SortProp) {
         className="flex justify-center items-center h-10 text-white  mt-5 rounded-lg bg-gray-700 tracking-wider border-4 border-transparent active:text-white active:border-white duration-300"
       >
         <AiOutlineArrowUp style={{ color: bgColorUp }} />
-
+        {/* <AiOutlineArrowUp style={{ color: bgColorUp ? bgColorUp : "black" }} /> */}
         <AiOutlineArrowDown style={{ color: bgColorDown }} />
       </button>
     </motion.div>
