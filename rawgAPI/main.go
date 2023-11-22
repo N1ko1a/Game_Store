@@ -19,10 +19,23 @@ import (
 type Game struct {
 	Id              int               `json:"id"`
 	Name            string            `json:"name"`
-	BackgroundImage string            `json"background_image"`
+	BackgroundImage string            `json:"background_image"`
 	Rating          float64           `json:"rating"`
 	AgeRating       *EsrbRating       `json:"esrb_rating"` //Pointer na struct
 	GamePlatforms   []PlatformWrapper `json:"platforms"`   //niz structa
+	Stores          []StoreWrapper    `json:"stores"`
+	Genres          []Genre           `json:"genres"`
+}
+type Genre struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+}
+type StoreWrapper struct {
+	Store Store `json:"store"`
+}
+type Store struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
 }
 
 type EsrbRating struct {
@@ -86,6 +99,8 @@ func InsertIntoMongoDB(game Game) error {
 		{Key: "rating", Value: game.Rating},
 		{Key: "esrb_rating", Value: game.AgeRating},
 		{Key: "platforms", Value: game.GamePlatforms},
+		{Key: "stores", Value: game.Stores},
+		{Key: "genres", Value: game.Genres},
 	})
 	return err
 
@@ -208,9 +223,9 @@ func GetPaginatedGames(c *gin.Context) {
 
 	searchQuery := c.Query("search")
 	platformQuery := c.Query("platform")
-	fmt.Println("Search Query:", searchQuery)
-	fmt.Println("platformQuery: ", platformQuery)
-
+	storeQuery := c.Query("store")
+	genreQuery := c.Query("genre")
+	fmt.Println("Genre: ", genreQuery)
 	// Build the filter based on pagination and search criteria
 	filter := bson.M{}
 	if searchQuery != "" {
@@ -219,9 +234,23 @@ func GetPaginatedGames(c *gin.Context) {
 	if platformQuery != "" {
 		platformID, err := strconv.Atoi(platformQuery)
 		if err != nil {
-			// Handle error
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying platform filter"})
 		}
 		filter["platforms.platform.id"] = platformID
+	}
+	if storeQuery != "" {
+		storeID, err := strconv.Atoi(storeQuery)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying store filter"})
+		}
+		filter["stores.store.id"] = storeID
+	}
+	if genreQuery != "" {
+		genreID, err := strconv.Atoi(genreQuery)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying genre filter"})
+		}
+		filter["genres.id"] = genreID
 	}
 	// Calculate offset and limit for the database query
 	offset := (page - 1) * pageSize
