@@ -33,7 +33,7 @@ function SearchBar({
 
   return (
     <motion.div
-      className="flex flex-col fixed z-10 justify-start"
+      className="flex flex-col z-10 justify-start"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}

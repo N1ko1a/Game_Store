@@ -46,7 +46,7 @@ function GamePrev() {
   };
 
   return (
-    <motion.div ref={ref} className="flex flex-row mt-20 ml-5 overflow-hidden">
+    <motion.div ref={ref} className="flex flex-row  ml-5 overflow-hidden">
       <motion.div
         className="flex  mt-14"
         drag="x"
