@@ -33,9 +33,10 @@ function GameDisplay({
   const [selectedGenre, setSelectedGenre] = useState(0);
   const [selectedSort, setSelectedSort] = useState("");
   const [sign, setSign] = useState("");
-  const maxPage = 50;
+  const [itemCount, setItemCount] = useState(0);
   const itemsPerPage = 20;
   const [vrednost, setVrednost] = useState(6);
+  const pageCount = Math.ceil(itemCount / itemsPerPage);
 
   useEffect(() => {
     setIsLoading(true);
@@ -44,6 +45,7 @@ function GameDisplay({
     const genreFilterSearch = selectedGenreSearch ? selectedGenreSearch : "";
     const storeFilter = selectedStore ? selectedStore : "";
     const platformFilter = selectedPlatform ? selectedPlatform : "";
+
     if (selectedRating) {
       switch (selectedRating) {
         case 1:
@@ -75,7 +77,8 @@ function GameDisplay({
     fetch(apiURL)
       .then((res) => res.json())
       .then((data) => {
-        const gameResults = data.games || []; // default to an empty array if results is undefined
+        const gameResults = data.games || []; // default to an empty array if results is undefine
+        setItemCount(data.countToReturn);
         setGames(gameResults);
         setIsLoading(false);
         console.log("Podaci:", gameResults);
@@ -129,36 +132,21 @@ function GameDisplay({
           ? Array.from({ length: itemsPerPage }).map((_, index) => (
               <LoadSkeleton key={index} />
             ))
-          : games
-              //               .filter((item) => {
-              //                 const ratingCondition =
-              //                   vrednost === 6 ||
-              //                   (item.rating >= vrednost && item.rating <= vrednost + 1);
-              //                 {
-              //                   /*If selectedAge is an empty string, the condition is immediately true, allowing all items to be displayed.
-              // If selectedAge is not an empty string, it checks if item.esrb_rating is defined and whether the name property of item.esrb_rating matches the selectedAge. If these conditions are met, the item is displayed.*/
-              //                 }
-              //                 const ageCondition =
-              //                   selectedAge === "" ||
-              //                   (item.esrb_rating && item.esrb_rating.name === selectedAge);
-              //
-              //                 return ratingCondition && ageCondition;
-              //               })
-              .map((game) => (
-                <GameCart
-                  id={game.id}
-                  background={game.background_image}
-                  name={game.name}
-                  rating={game.rating}
-                />
-              ))}
+          : games.map((game) => (
+              <GameCart
+                id={game.id}
+                background={game.background_image}
+                name={game.name}
+                rating={game.rating}
+              />
+            ))}
       </div>
       <div className="flex justify-center items-center">
         <ReactPaginate
           previousLabel={"Previous"}
           nextLabel={"Next"}
           breakLabel={"..."}
-          pageCount={100}
+          pageCount={pageCount}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}

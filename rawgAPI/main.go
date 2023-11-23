@@ -319,9 +319,34 @@ func GetPaginatedGames(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error iterating over paginated games"})
 		return
 	}
+	// Query for the total count of all items (without pagination and filters)
+	totalCount, err := gamesCollection.CountDocuments(ctx, bson.D{})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting total count of items"})
+		return
+	}
 
-	// Return the list of paginated games as JSON response
-	c.JSON(http.StatusOK, gin.H{"games": games})
+	// Query for the count of filtered items
+	filteredCount, err := gamesCollection.CountDocuments(ctx, filter)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting filtered count of items"})
+		return
+	}
+
+	// Determine which count to use based on whether filters are applied
+	var countToReturn int64
+	if searchQuery != "" || platformQuery != "" || storeQuery != "" || genreQuery != "" || ratingQuery != "" || ageQuery != "" {
+		// Filters are applied, return filteredCount
+		countToReturn = filteredCount
+	} else {
+		// No filters applied, return totalCount
+		countToReturn = totalCount
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"games":         games,
+		"countToReturn": countToReturn,
+	})
 }
 func main() {
 	router := gin.Default()
