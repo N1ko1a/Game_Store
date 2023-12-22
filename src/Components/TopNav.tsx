@@ -17,7 +17,7 @@ function TopNav({
   onAgeSelect: (chose: string) => void;
 }) {
   return (
-    <div className="flex flex-row justify-between z-10  ml-20">
+    <div className="flex flex-row justify-between   ml-20">
       {/*Filter platforme  */}
 
       <SearchBar

@@ -3,12 +3,14 @@
 @tailwind utilities;
 
 .h-95vh {
-    height: 95vh;
-  }
-.w-500{
-    width: 500px;
+  height: 95vh;
+}
+.w-500 {
+  width: 500px;
 }
 .min-w-custom {
   min-width: 600px;
 }
-
+.left-40ps {
+  left: 40%;
+}

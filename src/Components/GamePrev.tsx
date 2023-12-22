@@ -17,12 +17,10 @@ function GamePrev() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
-    fetch(
-      "https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04&dates=2019-09-01,2023-10-18&page_size=10&page=1&ordering=-popularity",
-    )
+    fetch("http://localhost:8080/games?page=${1}&pageSize=${10}")
       .then((res) => res.json())
       .then((data) => {
-        setGames(data.results);
+        setGames(data.games);
         setIsLoading(false);
       })
       .catch((error) => {

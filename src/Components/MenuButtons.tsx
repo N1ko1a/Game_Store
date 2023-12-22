@@ -16,15 +16,13 @@ function MenuButtons({ onGenreChange, selectedGenre }: MenuButtonsProps) {
   const list = [4, 3, 5, 2, 10, 1, 6, 15];
   useEffect(() => {
     setIsLoading(true);
-    const apiURL =
-      "https://api.rawg.io/api/genres?key=4557ebdc3256470e8e4b78f25d277a04";
+    const apiURL = "http://localhost:8080/genres";
 
     fetch(apiURL)
       .then((res) => res.json())
       .then((data) => {
-        setGenres(data.results);
+        setGenres(data.genres);
         setIsLoading(false);
-        console.log(data.results);
       })
       .catch((error) => {
         console.error("Error: ", error);

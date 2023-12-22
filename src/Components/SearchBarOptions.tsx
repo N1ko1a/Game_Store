@@ -74,13 +74,13 @@ const SearchOptions: React.FunctionComponent<SearchOptionsProps> = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    const apiURLgeners =
-      "https://api.rawg.io/api/genres?key=4557ebdc3256470e8e4b78f25d277a04";
+    const apiURLgeners = "http://localhost:8080/genres";
 
     fetch(apiURLgeners)
       .then((res) => res.json())
       .then((data) => {
-        setGenres(data.results);
+        setGenres(data.genres);
+        console.log(data.genres);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -90,13 +90,12 @@ const SearchOptions: React.FunctionComponent<SearchOptionsProps> = (props) => {
   }, []);
   useEffect(() => {
     setIsLoading(true);
-    const apiURLplatform =
-      "https://api.rawg.io/api/platforms?key=4557ebdc3256470e8e4b78f25d277a04";
+    const apiURLplatform = "http://localhost:8080/platforms";
 
     fetch(apiURLplatform)
       .then((res) => res.json())
       .then((data) => {
-        setPlatform(data.results);
+        setPlatform(data.platforms);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -106,15 +105,13 @@ const SearchOptions: React.FunctionComponent<SearchOptionsProps> = (props) => {
   }, []);
   useEffect(() => {
     setIsLoading(true);
-    const apiURLstores =
-      "https://api.rawg.io/api/stores?key=4557ebdc3256470e8e4b78f25d277a04";
+    const apiURLstores = "http://localhost:8080/stores";
 
     fetch(apiURLstores)
       .then((res) => res.json())
       .then((data) => {
-        setStore(data.results);
+        setStore(data.stores);
         setIsLoading(false);
-        console.log(data.results);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -255,7 +252,7 @@ const SearchOptions: React.FunctionComponent<SearchOptionsProps> = (props) => {
   };
 
   return (
-    <motion.div className="flex flex-wrap fixed justify-evenly  w-500 h-64 rounded-2xl bg-gray-800 mt-10 border-2 border-gray-900">
+    <motion.div className="flex flex-wrap absolute justify-evenly  w-500 h-64 rounded-2xl bg-gray-800 mt-10 border-2 border-gray-900">
       <div>
         <button
           onClick={toggleGenerClick}
@@ -313,7 +310,7 @@ const SearchOptions: React.FunctionComponent<SearchOptionsProps> = (props) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="bg-gray-700 absolute ml-5 w-44 rounded-lg flex flex-col items-center text-white font-medium text-l"
+              className="bg-gray-700 z-20 absolute ml-5 w-44 rounded-lg flex flex-col items-center text-white font-medium text-l"
             >
               {platform.map((item) => (
                 <div

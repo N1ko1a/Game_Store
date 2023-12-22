@@ -25,6 +25,7 @@ type Games = {
 };
 function GamePage(props: GamesPageProp) {
   const [games, setGames] = useState<Games | null>(null); // Initialize as null
+  const [gamesTest, setGamesTest] = useState<Games | null>(null); // Initialize as null
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -34,8 +35,19 @@ function GamePage(props: GamesPageProp) {
       .then((res) => res.json())
       .then((data) => {
         setGames(data);
-        setIsLoading(false);
         console.log(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setIsLoading(false);
+      });
+    fetch(`https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04`)
+      .then((res) => res.json())
+      .then((data1) => {
+        setGamesTest(data1);
+        setIsLoading(false);
+        console.log("Igrica:", data1.results);
       })
       .catch((error) => {
         console.error("Error:", error);
