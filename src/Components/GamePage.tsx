@@ -30,7 +30,7 @@ function GamePage(props: GamesPageProp) {
 
   useEffect(() => {
     fetch(
-      `https://api.rawg.io/api/games/${props.id}?key=4557ebdc3256470e8e4b78f25d277a04`,
+      `https://api.rawg.io/api/games/${props.id}?key=daab5ee3f0004ba1bd33811319e3d65d`,
     )
       .then((res) => res.json())
       .then((data) => {
@@ -42,7 +42,7 @@ function GamePage(props: GamesPageProp) {
         console.error("Error:", error);
         setIsLoading(false);
       });
-    fetch(`https://api.rawg.io/api/games?key=4557ebdc3256470e8e4b78f25d277a04`)
+    fetch(`https://api.rawg.io/api/games?key=daab5ee3f0004ba1bd33811319e3d65d`)
       .then((res) => res.json())
       .then((data1) => {
         setGamesTest(data1);
