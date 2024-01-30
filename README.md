@@ -8,4 +8,6 @@ Tehnologije koje cu koristiti:
 - Podaci: mongoDB
 
 Trenutni izgle stranice:
-<img src = "./src/Slike/Screenshot from 2023-11-01 19-31-34.png" width = 1000 hight = 900>
+<img src = "./src/Slike/jedan.png" width = 1000 hight = 900>
+<img src = "./src/Slike/dva.png" width = 1000 hight = 900>
+<img src = "./src/Slike/tri.png" width = 1000 hight = 900>
