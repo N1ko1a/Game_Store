@@ -7,6 +7,7 @@ const SignUp = ({ toggleSignUp }) => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfiramtion] = useState("");
   const [isValideEmail, setIsValideEmail] = useState(true);
   const [errorMessageEmail, setErrorMessageEmail] = useState("");
   const [isValidePassword, setIsValidePassword] = useState(true);
@@ -24,47 +25,19 @@ const SignUp = ({ toggleSignUp }) => {
   const handlePassword = (event) => {
     setPassword(event.target.value);
   };
-  function password_validate(p) {
-    return (
-      /[A-Z]/.test(p) &&
-      /[0-9]/.test(p) &&
-      !/[aeiou]/.test(p) &&
-      /^[@#][A-Za-z0-9]{7,13}$/.test(p)
-    );
-  }
-  const emailRegex = /\S+@\S+\.\S+/;
-  const passwordRegex = /(?=.{7,13}$)(?=.*[A-Z])(?=.*\d)/;
+  const handlePasswordConfirmation = (event) => {
+    setPasswordConfiramtion(event.target.value);
+  };
   const handleButtonClick = async () => {
-    if (!emailRegex.test(email)) {
-      setIsValideEmail(false);
-      setErrorMessageEmail("Invalide email format");
-      return;
-    } else {
-      setIsValideEmail(true);
-    }
-    if (!passwordRegex.test(password)) {
-      setIsValidePassword(false);
-      setErrorMessagePassword(
-        "Password must contain at least one uppercase letter and one number",
-      );
-      return;
-    } else {
-      setIsValidePassword(true);
-    }
     try {
       const response = await fetch(
-        `http://localhost:8080/users/${firstName}/${lastName}/${email}/${password}`,
+        "http://localhost:8080/register?firstName=Nikola&lastName=Ivanovic&email=ivanovicn@gmail.com&password=Otakustream1?&passwordConfirmation=Otakustream1?",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password,
-          }),
+          credentials: "include",
         },
       );
 
@@ -74,6 +47,7 @@ const SignUp = ({ toggleSignUp }) => {
         setLastName("");
         setEmail("");
         setPassword("");
+        setPasswordConfiramtion("");
       } else {
         // Handle error scenarios
         console.error("Failed to submit data to the backend");
@@ -86,12 +60,7 @@ const SignUp = ({ toggleSignUp }) => {
   const handleClick = () => {
     setOnClick(!onClick);
     toggleSignUp(onClick);
-    console.log(onClick);
   };
-  console.log("Ime: ", firstName);
-  console.log("Prezime: ", lastName);
-  console.log("Email: ", email);
-  console.log("Password: ", password);
 
   return (
     <div className="w-full h-screen  fixed z-40 top-1/4 left-40ps ">
@@ -130,6 +99,13 @@ const SignUp = ({ toggleSignUp }) => {
             placeholder="Password"
             value={password}
             onChange={handlePassword}
+            className="w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out hover:text-black"
+          />
+          <input
+            type="text"
+            placeholder="Confirm Password"
+            value={passwordConfirmation}
+            onChange={handlePasswordConfirmation}
             className="w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out hover:text-black"
           />
           {!isValideEmail && (
