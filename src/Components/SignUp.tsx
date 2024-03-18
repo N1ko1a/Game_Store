@@ -28,6 +28,7 @@ const SignUp = ({
     setTimeout(() => {
       // Postavi token na false nakon 1 sata (3600000 ms)
       window.localStorage.setItem("Prisustvo_Tokena", JSON.stringify(false));
+      window.localStorage.removeItem("Email_korisnika");
       window.dispatchEvent(new Event("storage"));
 
       console.log("Token postavljen na false nakon 1 sata");
@@ -76,6 +77,7 @@ const SignUp = ({
         setPasswordConfiramtion("");
         toggleSignUp(false);
         window.localStorage.setItem("Prisustvo_Tokena", JSON.stringify(true));
+        window.localStorage.setItem("Email_korisnika", JSON.stringify(email));
         window.dispatchEvent(new Event("storage"));
         setTokenFalseAfterTimeout();
       } else {

@@ -681,6 +681,61 @@ func GetGame(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"game": game})
 }
 
+// Add Games to user
+func AddGamesToUser(c *gin.Context) {
+	ctx := context.TODO()
+	quickstartDatabase := mongoClient.Database("GameStore")
+	userCollection := quickstartDatabase.Collection("Users")
+	gamesCollection := quickstartDatabase.Collection("Games")
+
+	var user moduls.User
+	var games moduls.Game
+
+	userEmail := c.Param("email")
+	gameID := c.Param("game_id")
+
+	fmt.Println("gameID: ", userEmail)
+	fmt.Println("gameID: ", gameID)
+	// Convert the gameID to an integer
+	id, err := strconv.Atoi(gameID)
+	fmt.Println("id: ", id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid game ID"})
+		return
+	}
+	err = gamesCollection.FindOne(ctx, bson.M{"id": id}).Decode(&games)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Igra nije pronađen"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Greška pri upitu bazi podataka"})
+		}
+		return
+	}
+
+	err = userCollection.FindOne(ctx, bson.M{"email": userEmail}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Korisnik nije pronađen"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Greška pri upitu bazi podataka"})
+		}
+		return
+	}
+
+	// Dodavanje igre u listu igara korisnika
+	user.Games = append(user.Games, games)
+
+	// Ažuriranje korisnika u bazi podataka
+	_, err = userCollection.UpdateOne(ctx, bson.M{"email": userEmail}, bson.M{"$set": user})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Greška pri ažuriranju korisnika"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Igra uspješno dodana korisniku"})
+}
+
 func Login(c *gin.Context) {
 	ctx := context.TODO()
 	quickstartDatabase := mongoClient.Database("GameStore")
@@ -943,5 +998,6 @@ func main() {
 	router.POST("/register", Register)
 	router.POST("/login", Login)
 	router.POST("/logout", Logout)
+	router.POST("/userUpdate/:email/:game_id", AddGamesToUser)
 	router.Run(":8080")
 }

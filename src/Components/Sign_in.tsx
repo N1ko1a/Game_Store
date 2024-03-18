@@ -21,6 +21,7 @@ const Sign_in = ({
     setTimeout(() => {
       // Postavi token na false nakon 1 sata (3600000 ms)
       window.localStorage.setItem("Prisustvo_Tokena", JSON.stringify(false));
+      window.localStorage.removeItem("Email_korisnika");
       window.dispatchEvent(new Event("storage"));
 
       console.log("Token postavljen na false nakon 1 sata");
@@ -57,6 +58,10 @@ const Sign_in = ({
       setApiError(data.error);
       if (response.ok) {
         window.localStorage.setItem("Prisustvo_Tokena", JSON.stringify(true));
+        window.localStorage.setItem(
+          "Email_korisnika",
+          JSON.stringify(emailValue),
+        );
         window.localStorage.setItem(
           "User_name",
           JSON.stringify(data.user.firstName),

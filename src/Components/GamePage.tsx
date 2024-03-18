@@ -14,6 +14,7 @@ type GamesPageProp = {
   id: number;
 };
 type Games = {
+  id: number;
   name: string;
   background_image: string;
   description_raw: string;
@@ -56,6 +57,38 @@ function GamePage(props: GamesPageProp) {
       });
   }, [props]);
 
+  const onAddToLibrary = async () => {
+    try {
+      const email = JSON.parse(window.localStorage.getItem("Email_korisnika"));
+
+      // Proverite da li postoje podaci o igri
+      if (games) {
+        const response = await fetch(
+          `http://localhost:8080/userUpdate/${email}/${games.id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("Successfully added game to the user");
+        } else {
+          // Handle error scenarios
+          console.error("Failed to submit data to the backend");
+        }
+      } else {
+        console.error("No game data available");
+      }
+    } catch (error) {
+      console.error("Error during fetch:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col h-3/4 justify-start mt-10 ml-10">
       {isLoading ? (
@@ -64,7 +97,10 @@ function GamePage(props: GamesPageProp) {
         <div>
           <div className=" flex justify-between  h-12 w-2/4   text-white">
             <h1 className="text-4xl font-bold">{games.name}</h1>
-            <button className="bg-gray-800 hover:text-black hover:bg-gray-700 transition duration-500 ease-in-out cursor-pointer p-2 mr-5 rounded-2xl">
+            <button
+              onClick={onAddToLibrary}
+              className="bg-gray-800 hover:text-black hover:bg-gray-700 transition duration-500 ease-in-out cursor-pointer p-2 mr-5 rounded-2xl"
+            >
               Add to Library
             </button>
           </div>

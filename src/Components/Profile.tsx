@@ -19,6 +19,7 @@ function Profile() {
       if (response.ok) {
         window.localStorage.setItem("Prisustvo_Tokena", JSON.stringify(false));
         window.localStorage.removeItem("User_name");
+        window.localStorage.removeItem("Email_korisnika");
         window.dispatchEvent(new Event("storage"));
       } else {
         // Handle error scenarios
