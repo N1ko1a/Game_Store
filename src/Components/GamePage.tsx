@@ -8,7 +8,6 @@ import {
   AiOutlineGlobal,
 } from "react-icons/ai";
 import LoadingGame from "./LoadingGame";
-import Liked from "./Liked";
 
 type GamesPageProp = {
   id: number;
@@ -49,7 +48,6 @@ function GamePage(props: GamesPageProp) {
       .then((data1) => {
         setGamesTest(data1);
         setIsLoading(false);
-        console.log("Igrica:", data1.results);
       })
       .catch((error) => {
         console.error("Error:", error);

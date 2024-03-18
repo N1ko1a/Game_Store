@@ -736,6 +736,27 @@ func AddGamesToUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Igra uspješno dodana korisniku"})
 }
 
+func getUser(c *gin.Context) {
+	ctx := context.TODO()
+	quickstartDatabase := mongoClient.Database("GameStore")
+	userCollection := quickstartDatabase.Collection("Users")
+
+	var user moduls.User
+	var email = c.Param("email")
+
+	var err = userCollection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Korisnik nije pronađen"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Greška pri upitu bazi podataka"})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": user})
+}
+
 func Login(c *gin.Context) {
 	ctx := context.TODO()
 	quickstartDatabase := mongoClient.Database("GameStore")
@@ -999,5 +1020,6 @@ func main() {
 	router.POST("/login", Login)
 	router.POST("/logout", Logout)
 	router.POST("/userUpdate/:email/:game_id", AddGamesToUser)
+	router.GET("/user/:email", getUser)
 	router.Run(":8080")
 }
