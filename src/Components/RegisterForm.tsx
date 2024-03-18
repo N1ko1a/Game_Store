@@ -19,6 +19,7 @@ function RegisterForm() {
   const toggleSignUp = (value: boolean) => {
     setShowSignUp(value);
   };
+
   return (
     <div className="flex flex-row ">
       <button

@@ -680,7 +680,57 @@ func GetGame(c *gin.Context) {
 	// Return the game as JSON
 	c.JSON(http.StatusOK, gin.H{"game": game})
 }
+
+func Login(c *gin.Context) {
+	ctx := context.TODO()
+	quickstartDatabase := mongoClient.Database("GameStore")
+	userCollection := quickstartDatabase.Collection("Users")
+
+	var user moduls.User
+	var email = c.Query("email")
+	var pass = c.Query("password")
+
+	if email == "" || pass == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Sva polja moraju biti popunjena"})
+		return
+	}
+
+	var err = userCollection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Korisnik nije pronađen"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Greška pri upitu bazi podataka"})
+		}
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword(user.Password, []byte(pass))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Lozinka se ne poklapa"})
+		return
+	}
+
+	tokenString, err := createToken(user.FirstName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Korisničko ime nije pronađeno"})
+		return
+	}
+
+	SetCookie(c, "jwt", tokenString, time.Now().Add(time.Hour*1))
+	c.JSON(http.StatusOK, gin.H{"user": user, "token": tokenString})
+}
+
+func Logout(c *gin.Context) {
+	ClearCookie(c, "jwt")
+}
+
 func Register(c *gin.Context) {
+
+	ctx := context.TODO()
+	quickstartDatabase := mongoClient.Database("GameStore")
+	userCollection := quickstartDatabase.Collection("Users")
+
 	var user moduls.User
 	var firstName = c.Query("firstName")
 	var lastName = c.Query("lastName")
@@ -688,20 +738,29 @@ func Register(c *gin.Context) {
 	var password = c.Query("password")
 	var passwordConfirmation = c.Query("passwordConfirmation")
 
-	fmt.Println(firstName)
-	fmt.Println(lastName)
-	fmt.Println(email)
-	fmt.Println(password)
-	fmt.Println(passwordConfirmation)
-
 	if firstName == "" || lastName == "" || email == "" || password == "" || passwordConfirmation == "" {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Sva polja moraju biti popunjena"})
 		return
 	}
 
-	isValidEmail := govalidator.IsEmail(email)
-	if !isValidEmail {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Neispravan email"})
+	err := userCollection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+
+			isValidEmail := govalidator.IsEmail(email)
+			if !isValidEmail {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Neispravan email"})
+				return
+			}
+
+		} else {
+			// Some other error occurred while querying the database
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Greška prilikom pretrage korisnika"})
+			return
+		}
+	} else {
+		// User with this email already exists
+		c.JSON(http.StatusConflict, gin.H{"error": "Korisnik već postoji"})
 		return
 	}
 
@@ -778,7 +837,7 @@ func createToken(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"username": username,
-			"exp":      time.Now().Add(time.Hour * 24).Unix(),
+			"exp":      time.Now().Add(time.Hour).Unix(),
 		})
 
 	tokenString, err := token.SignedString(secretKey)
@@ -833,7 +892,7 @@ func main() {
 	router := gin.Default()
 	// Configure CORS middlewar
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:5173", "http://localhost:3000"} // Add your frontend's origins
+	config.AllowOrigins = []string{"https://api.rawg.io", "http://localhost:5173", "http://localhost:3000"} // Add your frontend's origins
 	config.AllowCredentials = true
 	router.Use(cors.New(config))
 	// Povezivanje sa bazom podataka
@@ -882,5 +941,7 @@ func main() {
 	router.GET("/platforms", GetPlatforms)
 	router.GET("/stores", GetStores)
 	router.POST("/register", Register)
+	router.POST("/login", Login)
+	router.POST("/logout", Logout)
 	router.Run(":8080")
 }

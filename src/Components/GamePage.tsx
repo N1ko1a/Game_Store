@@ -8,6 +8,7 @@ import {
   AiOutlineGlobal,
 } from "react-icons/ai";
 import LoadingGame from "./LoadingGame";
+import Liked from "./Liked";
 
 type GamesPageProp = {
   id: number;
@@ -56,13 +57,16 @@ function GamePage(props: GamesPageProp) {
   }, [props]);
 
   return (
-    <div className="flex flex-col h-3/4 justify-start mt-28 ml-10">
+    <div className="flex flex-col h-3/4 justify-start mt-10 ml-10">
       {isLoading ? (
         <LoadingGame /> // Display a loading indicator
       ) : games ? (
         <div>
-          <div className="text-4xl font-bold text-white">
-            <h1>{games.name}</h1>
+          <div className=" flex justify-between  h-12 w-2/4   text-white">
+            <h1 className="text-4xl font-bold">{games.name}</h1>
+            <button className="bg-gray-800 hover:text-black hover:bg-gray-700 transition duration-500 ease-in-out cursor-pointer p-2 mr-5 rounded-2xl">
+              Add to Library
+            </button>
           </div>
           <div className="mt-5 flex flex-row">
             <div className="w-2/4">
@@ -73,10 +77,8 @@ function GamePage(props: GamesPageProp) {
               />
             </div>
             <div className="ml-10 w-2/4 text-white">
-              <h1 className="text-2xl">
-                <span className="text-blue-500">Game</span> Description
-              </h1>
-              <p className="mt-2">{games.description_raw}</p>
+              <h1 className="text-2xl ">Description</h1>
+              <p className="mt-2 ">{games.description_raw}</p>
               <div className="mt-10">
                 <p className="flex items-center text-lg">
                   <AiFillLeftCircle className="mr-2" /> RELEAS DATE:

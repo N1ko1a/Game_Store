@@ -10,11 +10,10 @@ function Game() {
 
   return (
     <div className="flex flex-row justify-center">
-      <div className="mt-5">
+      <div className="h-screen w-2/12">
         <SideNav />
       </div>
-      <div className="w-4/5">
-        <TopNav />
+      <div className="w-4/5 h-full">
         <GamePage id={id} />
       </div>
     </div>

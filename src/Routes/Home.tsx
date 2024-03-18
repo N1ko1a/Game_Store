@@ -34,9 +34,11 @@ function Home() {
   };
 
   return (
-    <div className="flex flex-row justify-center">
-      <SideNav />
-      <div className="w-4/5">
+    <div className="flex flex-row justify-center w-screen h-screen">
+      <div className="h-screen w-2/12">
+        <SideNav />
+      </div>
+      <div className="w-4/5 h-full">
         <TopNav
           onSearchChange={handleSearchChange}
           onPlatformSelect={handleOnPlatformSelect} // Changed the prop name
@@ -46,7 +48,6 @@ function Home() {
           onStoreSelect={handleOnStoreSelect}
         />
         <GamePrev />
-        {}
         <GameDisplay
           searchValue={searchValue}
           selectedStore={selectedStore}
@@ -54,8 +55,7 @@ function Home() {
           selectedPlatform={selectedPlatform}
           selectedRating={selectedRating}
           selectedGenreSearch={selectedGener}
-        />{" "}
-        {/* Passed the selected platform */}
+        />
       </div>
     </div>
   );

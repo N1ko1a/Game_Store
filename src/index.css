@@ -1,7 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+body {
+  background-color: rgb(17 24 39);
+}
 .h-95vh {
   height: 95vh;
 }
