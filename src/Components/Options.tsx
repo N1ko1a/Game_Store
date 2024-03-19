@@ -8,7 +8,6 @@ function Options() {
   const [isToken, setIsToken] = useState(
     JSON.parse(window.localStorage.getItem("Prisustvo_Tokena")) || false,
   );
-  console.log(isToken);
   const [show, setShowe] = useState(false);
 
   useEffect(() => {

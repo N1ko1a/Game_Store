@@ -75,6 +75,8 @@ function GamePage(props: GamesPageProp) {
 
         if (response.ok) {
           console.log("Successfully added game to the user");
+          window.localStorage.setItem("Game_added", JSON.stringify(true));
+          window.dispatchEvent(new Event("storage"));
         } else {
           // Handle error scenarios
           console.error("Failed to submit data to the backend");

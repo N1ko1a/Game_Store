@@ -24,7 +24,11 @@ function SideNav() {
   const [isToken, setIsToken] = useState(
     JSON.parse(window.localStorage.getItem("Prisustvo_Tokena")) || false,
   );
+  const [isGameAdded, setIsGameAdded] = useState(
+    JSON.parse(window.localStorage.getItem("Game_added")) || false,
+  );
   const [show, setShowe] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
   console.log("Show", show);
 
   useEffect(() => {
@@ -32,9 +36,16 @@ function SideNav() {
   }, [isToken]);
 
   useEffect(() => {
+    setIsAdded(isGameAdded);
+  }, [isGameAdded]);
+
+  useEffect(() => {
     const handleStorageChange = () => {
       setIsToken(
         JSON.parse(window.localStorage.getItem("Prisustvo_Tokena")) || false,
+      );
+      setIsAdded(
+        JSON.parse(window.localStorage.getItem("Game_added")) || false,
       );
     };
 
@@ -52,6 +63,7 @@ function SideNav() {
         .then((res) => res.json())
         .then((data1) => {
           setLibGames(data1.user.games);
+          window.localStorage.setItem("Game_added", JSON.stringify(false));
           setIsLoading(false);
         })
         .catch((error) => {
@@ -59,7 +71,7 @@ function SideNav() {
           setIsLoading(false);
         });
     }
-  }, [show]);
+  }, [show, isAdded]);
 
   return (
     <div className="fixed left-5 top-5 w-80 h-95vh rounded-2xl bg-gray-800">
