@@ -8,6 +8,7 @@ import {
   AiOutlineGlobal,
 } from "react-icons/ai";
 import LoadingGame from "./LoadingGame";
+import Comment from "./Comment";
 
 type GamesPageProp = {
   id: number;

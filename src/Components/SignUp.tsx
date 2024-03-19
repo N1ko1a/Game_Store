@@ -1,5 +1,6 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SignUp = ({
   toggleSignUp,
@@ -113,77 +114,89 @@ const SignUp = ({
   };
 
   return (
-    <div className="w-full h-screen  fixed z-40 top-1/4 left-40ps ">
-      <div className="bg-gray-800 w-96 h-fit mb-10  text-white rounded-3xl ">
-        <div className="w-full h-5 mr-10 relative mb-5 ">
-          <AiOutlineClose
-            className="w-5 h-5 absolute top-8 right-5 hover:text-black  transition duration-500 ease-in-out cursor-pointer"
-            onClick={handleClick}
-          />
-        </div>
-        <div className="flex flex-col justify-center items-center mt-10">
-          <input
-            ref={firstNameRef}
-            type="text"
-            placeholder="First Name"
-            value={firstName}
-            onChange={handleFirstName}
-            onKeyDown={(event) => handleEnterPress(event, firstNameRef)}
-            className="w-4/5 h-10 m-2  rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out "
-          />
-          <input
-            ref={lastNameRef}
-            type="text"
-            placeholder="Last Name"
-            value={lastName}
-            onChange={handleLastName}
-            onKeyDown={(event) => handleEnterPress(event, lastNameRef)}
-            className="w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out "
-          />
+    <AnimatePresence>
+      <motion.div
+        className="w-full h-screen  fixed z-40 top-1/4 left-40ps "
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.5 }}
+        transition={{
+          duration: 0.4,
+          delay: 0.1,
+          ease: [0, 0.71, 0.2, 1.01],
+        }}
+      >
+        <div className="bg-gray-800 w-96 h-fit mb-10  text-white rounded-3xl ">
+          <div className="w-full h-5 mr-10 relative mb-5 ">
+            <AiOutlineClose
+              className="w-5 h-5 absolute top-8 right-5 hover:text-black  transition duration-500 ease-in-out cursor-pointer"
+              onClick={handleClick}
+            />
+          </div>
+          <div className="flex flex-col justify-center items-center mt-10">
+            <input
+              ref={firstNameRef}
+              type="text"
+              placeholder="First Name"
+              value={firstName}
+              onChange={handleFirstName}
+              onKeyDown={(event) => handleEnterPress(event, firstNameRef)}
+              className="w-4/5 h-10 m-2  rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out "
+            />
+            <input
+              ref={lastNameRef}
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={handleLastName}
+              onKeyDown={(event) => handleEnterPress(event, lastNameRef)}
+              className="w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out "
+            />
 
-          <input
-            ref={emailRef}
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={handleEmail}
-            onKeyDown={(event) => handleEnterPress(event, emailRef)}
-            className="w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out "
-          />
-          <input
-            ref={passwordRef}
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={handlePassword}
-            onKeyDown={(event) => handleEnterPress(event, passwordRef)}
-            className={`w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out ${password ? "text-xs" : "text-base"} `}
-          />
-          <input
-            ref={passwordConfirmationRef}
-            type="password"
-            placeholder="Confirm Password"
-            value={passwordConfirmation}
-            onChange={handlePasswordConfirmation}
-            onKeyDown={(event) =>
-              handleEnterPress(event, passwordConfirmationRef)
-            }
-            className={`w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out ${passwordConfirmation ? "text-xs" : "text-base"} `}
-          />
-          {apiError != "" && (
-            <p style={{ color: "red", textAlign: "center", margin: "0" }}>
-              {apiError}
-            </p>
-          )}
-          <button
-            className=" w-2/5 h-10 mt-5 mb-5  text-center rounded-2xl bg-gray-900 outline-none text-white  hover:bg-gray-700 transition duration-500 ease-in-out hover:text-black"
-            onClick={handleButtonClick}
-          >
-            Sign up
-          </button>
+            <input
+              ref={emailRef}
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={handleEmail}
+              onKeyDown={(event) => handleEnterPress(event, emailRef)}
+              className="w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out "
+            />
+            <input
+              ref={passwordRef}
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={handlePassword}
+              onKeyDown={(event) => handleEnterPress(event, passwordRef)}
+              className={`w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out ${password ? "text-xs" : "text-base"} `}
+            />
+            <input
+              ref={passwordConfirmationRef}
+              type="password"
+              placeholder="Confirm Password"
+              value={passwordConfirmation}
+              onChange={handlePasswordConfirmation}
+              onKeyDown={(event) =>
+                handleEnterPress(event, passwordConfirmationRef)
+              }
+              className={`w-4/5 h-10 m-2 rounded-2xl bg-gray-900 outline-none text-white pl-4 hover:bg-gray-700 transition duration-500 ease-in-out ${passwordConfirmation ? "text-xs" : "text-base"} `}
+            />
+            {apiError != "" && (
+              <p style={{ color: "red", textAlign: "center", margin: "0" }}>
+                {apiError}
+              </p>
+            )}
+            <button
+              className=" w-2/5 h-10 mt-5 mb-5  text-center rounded-2xl bg-gray-900 outline-none text-white  hover:bg-gray-700 transition duration-500 ease-in-out hover:text-black"
+              onClick={handleButtonClick}
+            >
+              Sign up
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
