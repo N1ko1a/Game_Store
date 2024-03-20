@@ -252,7 +252,7 @@ const SearchOptions: React.FunctionComponent<SearchOptionsProps> = (props) => {
   };
 
   return (
-    <motion.div className="flex flex-wrap absolute justify-evenly  w-500 h-64 rounded-2xl bg-gray-800 mt-10 border-2 border-gray-900">
+    <motion.div className="flex flex-wrap  absolute justify-evenly  w-500 h-64 rounded-2xl bg-gray-800 mt-10 border-2 border-gray-900">
       <div>
         <button
           onClick={toggleGenerClick}

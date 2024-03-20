@@ -114,18 +114,22 @@ function GameDisplay({
   };
 
   return (
-    <div>
-      <div className="flex justify-between   mr-20">
-        <MenuButtons
-          onGenreChange={handleGenreChange}
-          selectedGenre={selectedGenre}
-        />
-        <Sort
-          onSortingSelect={handleSortingChange}
-          onSignSelect={handleSignChanfe}
-        />
+    <div className="  ">
+      <div className="flex flex-col sm:flex-row w-full h-fit  justify-between">
+        <div className="flex w-full sm:w-2/3 h-fit   ">
+          <MenuButtons
+            onGenreChange={handleGenreChange}
+            selectedGenre={selectedGenre}
+          />
+        </div>
+        <div className="flex justify-center sm:justify-end w-full sm:w-1/3 pr-5">
+          <Sort
+            onSortingSelect={handleSortingChange}
+            onSignSelect={handleSignChanfe}
+          />
+        </div>
       </div>
-      <div className="grid xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 gap-10 mt-5 mr-20 ml-20 justify-center items-center overflow-hidden">
+      <div className="grid  grid-cols-1 xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 gap-5 w-full mt-5  justify-items-center overflow-hidden">
         {isLoading
           ? Array.from({ length: itemsPerPage }).map((_, index) => (
               <LoadSkeleton key={index} />

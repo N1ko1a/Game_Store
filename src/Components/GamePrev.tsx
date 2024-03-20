@@ -46,7 +46,7 @@ function GamePrev() {
   return (
     <motion.div ref={ref} className="flex flex-row  ml-5 overflow-hidden">
       <motion.div
-        className="flex  mt-14"
+        className="flex mt-0 sm:mt-5"
         drag="x"
         dragConstraints={{ right: 0, left: -width }}
       >

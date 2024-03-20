@@ -31,7 +31,7 @@ function MenuButtons({ onGenreChange, selectedGenre }: MenuButtonsProps) {
   }, []);
 
   return (
-    <div className="flex justify-start ml-20 mt-10">
+    <div className="flex flex-wrap justify-center sm:justify-start mt-10">
       <button
         className={`text-white hover:text-black ease-in-out duration-500 h-10 ml-2 mr-2 text-sm ${
           selectedGenre === 0 ? "font-bold text-xl" : "text-base"
